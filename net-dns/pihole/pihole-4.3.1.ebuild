@@ -37,7 +37,7 @@ src_prepare() {
 src_compile() {
     CFLAGS="$CFLAGS -fPIC -Wno-error=stringop-truncation"
     CXXFLAGS="$CXXFLAGS -fPIC -Wno-error=stringop-truncation"
-    emake -j8
+    emake
 }
 
 # manually install files as there is no install target
