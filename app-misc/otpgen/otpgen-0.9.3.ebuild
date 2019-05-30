@@ -8,7 +8,7 @@ DESCRIPTION="Multi-purpose OTP token generator. Supports TOTP, HOTP, Authy and S
 LICENSE="BSD-2-Clause"
 
 SLOT="0"
-KEYWORDS="~amd64"
+KEYWORDS="amd64"
 IUSE=""
 
 DEPEND="
