@@ -1,6 +1,11 @@
 # Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
+# NOTE by me: this package does not work and basically just downloads
+# a bunch of docker images and does nothing but wasting bandwidth and
+# your time
+# checkout the nvidia-docker group of this repository instead :)
+
 EAPI=7
 
 DESCRIPTION="NVIDIA Docker"
