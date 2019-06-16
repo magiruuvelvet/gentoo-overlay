@@ -1,4 +1,4 @@
-# Copyright 1999-2019 Gentoo Authors
+# Copyright 1999-2019 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="6"
@@ -28,6 +28,7 @@ RDEPEND="
 	x11-apps/xauth
 	>=app-arch/libarchive-2.8
 	>=app-crypt/gpgme-1.1.8
+	>=sys-fs/fuse-2.9.2
 	policykit? ( >=sys-auth/polkit-0.98 )
 	seccomp? ( sys-libs/libseccomp )
 "
@@ -39,14 +40,14 @@ DEPEND="${RDEPEND}
 	sys-devel/bison
 	introspection? ( >=dev-libs/gobject-introspection-1.40 )
 	doc? ( >=dev-util/gtk-doc-1.20
-		   dev-libs/libxslt )
+	       dev-libs/libxslt )
 "
 # FIXME: is there a nicer way to do this?
 PDEPEND="
 	gtk? ( >=sys-apps/xdg-desktop-portal-0.10
-		   sys-apps/xdg-desktop-portal-gtk )
+	       sys-apps/xdg-desktop-portal-gtk )
 	gnome? ( >=sys-apps/xdg-desktop-portal-0.10
-		 sys-apps/xdg-desktop-portal-gtk )
+	         sys-apps/xdg-desktop-portal-gtk )
 "
 
 pkg_setup() {
