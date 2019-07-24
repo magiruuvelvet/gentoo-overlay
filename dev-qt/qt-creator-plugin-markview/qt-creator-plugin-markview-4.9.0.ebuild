@@ -22,7 +22,7 @@ SRC_URI="https://github.com/OneMoreGres/qtc-markview/archive/${PV}.tar.gz -> ${P
 
 S="${WORKDIR}/qtc-markview-${PV}"
 
-QT_CREATOR_VERSION="4.9.1"
+QT_CREATOR_VERSION="4.9.2"
 
 DEPEND="
     =dev-qt/qt-creator-$QT_CREATOR_VERSION
