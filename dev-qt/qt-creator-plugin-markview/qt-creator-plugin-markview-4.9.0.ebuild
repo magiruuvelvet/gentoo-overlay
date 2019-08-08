@@ -22,7 +22,7 @@ SRC_URI="https://github.com/OneMoreGres/qtc-markview/archive/${PV}.tar.gz -> ${P
 
 S="${WORKDIR}/qtc-markview-${PV}"
 
-QT_CREATOR_VERSION="4.9.2"
+QT_CREATOR_VERSION="4.10.0_rc1"
 
 DEPEND="
     =dev-qt/qt-creator-$QT_CREATOR_VERSION
@@ -61,5 +61,5 @@ src_compile() {
 src_install() {
     mkdir -p "${D}/usr/lib64/qtcreator/plugins"
     # FIXME: this path doesn't seem very stable and may change without notice
-    cp "${HOME}/.local/share/data/QtProject/qtcreator/plugins/$QT_CREATOR_VERSION/"* "${D}/usr/lib64/qtcreator/plugins/"
+    cp "${HOME}/.local/share/data/QtProject/qtcreator/plugins/"*"/"* "${D}/usr/lib64/qtcreator/plugins/"
 }
