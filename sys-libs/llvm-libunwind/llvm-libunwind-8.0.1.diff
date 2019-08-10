@@ -1,0 +1,37 @@
+--- llvm-libunwind-8.0.1.ebuild
++++ llvm-libunwind-8.0.1.ebuild
+@@ -56,6 +56,8 @@
+ }
+ 
+ multilib_src_configure() {
++    echo "USING CUSTOM PATCHED VERSION"
++
+ 	local libdir=$(get_libdir)
+ 
+ 	local mycmakeargs=(
+@@ -67,6 +69,9 @@
+ 		# support non-native unwinding; given it's small enough,
+ 		# enable it unconditionally
+ 		-DLIBUNWIND_ENABLE_CROSS_UNWINDING=ON
++
++		# use compiler-rt instead of GNU/libgcc
++		-DLIBUNWIND_USE_COMPILER_RT=ON
+ 	)
+ 	if use test; then
+ 		local clang_path=$(type -P "${CHOST:+${CHOST}-}clang" 2>/dev/null)
+@@ -97,6 +102,7 @@
+ 
+ 		-DLIBCXXABI_LIBCXX_INCLUDES="${WORKDIR}"/libcxx/include
+ 		-DLIBCXXABI_LIBUNWIND_INCLUDES="${S}"/include
++		-DLIBCXXABI_USE_COMPILER_RT=ON
+ 	)
+ 
+ 	cmake-utils_src_configure
+@@ -115,6 +121,7 @@
+ 		-DLIBCXXABI_USE_LLVM_UNWINDER=ON
+ 		-DLIBCXX_CXX_ABI=libcxxabi
+ 		-DLIBCXX_CXX_ABI_INCLUDE_PATHS="${WORKDIR}"/libcxxabi/include
++		-DLIBCXX_USE_COMPILER_RT=ON
+ 		-DLIBCXX_ENABLE_ABI_LINKER_SCRIPT=OFF
+ 		-DLIBCXX_HAS_MUSL_LIBC=$(usex elibc_musl)
+ 		-DLIBCXX_HAS_GCC_S_LIB=OFF
