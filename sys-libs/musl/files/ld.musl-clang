@@ -1,11 +1,12 @@
 #!/bin/sh
-cc="clang"
+
 libc_lib="/usr/musl/lib64"
 ldso="/lib64/ld-musl-x86_64.so.1"
 cleared=
 shared=
 userlinkdir=
 userlink=
+llvm_ver="9.0.0"
 
 # determine correct library path and ELF interpreter for multilib build
 case " $@ " in *\ elf_i386\ *) libc_lib="/usr/musl/lib"; ldso="/lib/ld-musl-i386.so.1"; multilib=32 ;; *) libc_lib="/usr/musl/lib64"; ldso="/lib64/ld-musl-x86_64.so.1"; multilib=64 ;; esac
@@ -31,16 +32,16 @@ for x ; do
             ;;
         crtbegin*.o)
             if [[ $multilib == 32 ]]; then
-                set -- "$@" /usr/lib/clang/9.0.0/lib/linux/clang_rt.crtbegin-i386.o
+                set -- "$@" /usr/lib/clang/$llvm_ver/lib/linux/clang_rt.crtbegin-i386.o
             else
-                set -- "$@" /usr/lib/clang/9.0.0/lib/linux/clang_rt.crtbegin-x86_64.o
+                set -- "$@" /usr/lib/clang/$llvm_ver/lib/linux/clang_rt.crtbegin-x86_64.o
             fi
             ;;
         crtend*.o)
             if [[ $multilib == 32 ]]; then
-                set -- "$@" /usr/lib/clang/9.0.0/lib/linux/clang_rt.crtend-i386.o
+                set -- "$@" /usr/lib/clang/$llvm_ver/lib/linux/clang_rt.crtend-i386.o
             else
-                set -- "$@" /usr/lib/clang/9.0.0/lib/linux/clang_rt.crtend-x86_64.o
+                set -- "$@" /usr/lib/clang/$llvm_ver/lib/linux/clang_rt.crtend-x86_64.o
             fi
             ;;
         -l*)
@@ -58,4 +59,4 @@ for x ; do
     esac
 done
 
-exec $($cc -print-prog-name=ld.lld) -nostdlib "$@" -lc -dynamic-linker "$ldso"
+exec ld.lld -nostdlib "$@" -lc -dynamic-linker "$ldso"

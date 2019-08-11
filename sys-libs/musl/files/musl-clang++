@@ -1,6 +1,6 @@
 #!/bin/sh
 
-cc="clang"
+cc="clang++"
 libc="/usr/musl"
 libc_inc="/usr/musl/include"
 libc_lib="/usr/musl/lib64"
