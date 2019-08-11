@@ -1,0 +1,36 @@
+--- clang-8.0.1.ebuild
++++ clang-8.0.1.ebuild
+@@ -120,6 +120,8 @@
+ }
+ 
+ multilib_src_configure() {
++    echo "USING CUSTOM PATCHED VERSION"
++
+ 	local llvm_version=$(llvm-config --version) || die
+ 	local clang_version=$(ver_cut 1-3 "${llvm_version}")
+ 
+@@ -147,6 +149,11 @@
+ 		# override default stdlib and rtlib
+ 		-DCLANG_DEFAULT_CXX_STDLIB=$(usex default-libcxx libc++ "")
+ 		-DCLANG_DEFAULT_RTLIB=$(usex default-compiler-rt compiler-rt "")
++		-DCLANG_DEFAULT_UNWINDLIB=libunwind
++		-DCLANG_DEFAULT_OBJCOPY=llvm-objcopy
++		-DCLANG_DEFAULT_LINKER=ld.lld
++		-DCLANG_DEFAULT_STD_C=c17
++		-DCLANG_DEFAULT_STD_CXX=cxx17
+ 
+ 		-DCLANG_ENABLE_ARCMT=$(usex static-analyzer)
+ 		-DCLANG_ENABLE_STATIC_ANALYZER=$(usex static-analyzer)
+@@ -181,12 +188,6 @@
+ 		)
+ 	fi
+ 
+-	if [[ -n ${EPREFIX} ]]; then
+-		mycmakeargs+=(
+-			-DGCC_INSTALL_PREFIX="${EPREFIX}/usr"
+-		)
+-	fi
+-
+ 	if tc-is-cross-compiler; then
+ 		[[ -x "/usr/bin/clang-tblgen" ]] \
+ 			|| die "/usr/bin/clang-tblgen not found or usable"

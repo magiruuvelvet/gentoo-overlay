@@ -1,0 +1,5 @@
+use for 9.0 release
+
+-DLLVM_TARGET_TRIPLE_ENV=x86_64-pc-linux
+-DLLVM_HOST_TRIPLE=x86_64-pc-linux
+-DLLVM_DEFAULT_TARGET_TRIPLE=x86_64-pc-linux
