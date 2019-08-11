@@ -1,0 +1,2 @@
+#!/bin/sh
+exec /lib64/ld-musl-x86_64.so.1 --list -- "$@"
