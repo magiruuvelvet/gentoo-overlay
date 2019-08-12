@@ -85,6 +85,7 @@ src_install() {
     # install migration wrapper
     install -d "${D}/usr/bin"
     ln -s /usr/musl/bin/ldd "${D}/usr/bin/musl-ldd"
+    install -D -m755 "${FILESDIR}/exec" "${D}/usr/bin/musl-exec"
     install -D -m755 "${FILESDIR}/musl-clang" "${D}/usr/bin/musl-clang"
     install -D -m755 "${FILESDIR}/musl-clang++" "${D}/usr/bin/musl-clang++"
     install -D -m755 "${FILESDIR}/ld.musl-clang" "${D}/usr/bin/ld.musl-clang"
