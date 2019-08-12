@@ -88,4 +88,5 @@ src_install() {
     install -D -m755 "${FILESDIR}/musl-clang" "${D}/usr/bin/musl-clang"
     install -D -m755 "${FILESDIR}/musl-clang++" "${D}/usr/bin/musl-clang++"
     install -D -m755 "${FILESDIR}/ld.musl-clang" "${D}/usr/bin/ld.musl-clang"
+    install -D -m755 "${FILESDIR}/ld.musl-clang++" "${D}/usr/bin/ld.musl-clang++"
 }

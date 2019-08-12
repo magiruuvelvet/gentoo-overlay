@@ -28,7 +28,7 @@ done
 # FIXME: nasty -isystem and #include_next workaround
 exec $cc \
     -B"$thisdir" \
-    -fuse-ld=musl-clang \
+    -fuse-ld=musl-clang++ \
     -nostdinc \
     --sysroot "$libc" \
     -isystem "$libc_inc/c++/v1" \
