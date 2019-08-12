@@ -26,6 +26,7 @@ done
 
 # invoke compiler
 # FIXME: nasty -isystem and #include_next workaround
+# FIXME: when bootstrapping the llvm runtime libraries prepend an additional "-isystem "$libc_inc" \" after sysroot
 exec $cc \
     -B"$thisdir" \
     -fuse-ld=musl-clang++ \
