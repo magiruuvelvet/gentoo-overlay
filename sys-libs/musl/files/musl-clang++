@@ -30,6 +30,7 @@ exec $cc \
     -fuse-ld=musl-clang \
     -nostdinc \
     --sysroot "$libc" \
+    -isystem "$libc_inc/c++/v1" \
     -isystem "$libc_inc" \
     -L-user-start \
     $sflags \
