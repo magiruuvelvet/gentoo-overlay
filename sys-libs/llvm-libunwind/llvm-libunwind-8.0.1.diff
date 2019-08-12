@@ -24,6 +24,7 @@
  		-DLIBCXXABI_LIBCXX_INCLUDES="${WORKDIR}"/libcxx/include
  		-DLIBCXXABI_LIBUNWIND_INCLUDES="${S}"/include
 +		-DLIBCXXABI_USE_COMPILER_RT=ON
++		-DLLVM_ENABLE_LIBCXX=ON
  	)
  
  	cmake-utils_src_configure

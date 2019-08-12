@@ -72,6 +72,7 @@ multilib_src_configure() {
 
 		# use compiler-rt instead of GNU/libgcc
 		-DLIBUNWIND_USE_COMPILER_RT=ON
+		-DLLVM_ENABLE_LIBCXX=ON
 	)
 	if use test; then
 		local clang_path=$(type -P "${CHOST:+${CHOST}-}clang" 2>/dev/null)
