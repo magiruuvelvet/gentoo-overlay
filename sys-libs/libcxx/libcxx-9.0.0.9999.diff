@@ -1,6 +1,6 @@
---- libcxx-8.0.1.ebuild
-+++ libcxx-8.0.1.ebuild
-@@ -80,6 +80,8 @@
+--- libcxx-9.0.0.9999.ebuild
++++ libcxx-9.0.0.9999.ebuild
+@@ -91,6 +91,8 @@
  }
  
  src_configure() {
@@ -9,7 +9,7 @@
  	# note: we need to do this before multilib kicks in since it will
  	# alter the CHOST
  	local cxxabi cxxabi_incs
-@@ -133,6 +135,7 @@
+@@ -144,10 +146,11 @@
  		-DLIBCXX_ENABLE_STATIC=$(usex static-libs)
  		-DLIBCXX_CXX_ABI=${cxxabi}
  		-DLIBCXX_CXX_ABI_INCLUDE_PATHS=${cxxabi_incs}
@@ -17,3 +17,8 @@
  		# we're using our own mechanism for generating linker scripts
  		-DLIBCXX_ENABLE_ABI_LINKER_SCRIPT=OFF
  		-DLIBCXX_HAS_MUSL_LIBC=$(usex elibc_musl)
+-		-DLIBCXX_HAS_GCC_S_LIB=${want_gcc_s}
++		-DLIBCXX_HAS_GCC_S_LIB=OFF
+ 		-DLIBCXX_INCLUDE_TESTS=$(usex test)
+ 		-DCMAKE_SHARED_LINKER_FLAGS="${extra_libs[*]} ${LDFLAGS}"
+ 	)

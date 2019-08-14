@@ -20,7 +20,7 @@ EGIT_BRANCH="release_90"
 
 LICENSE="|| ( UoI-NCSA MIT )"
 SLOT="$(ver_cut 1-3)"
-KEYWORDS="~amd64"
+KEYWORDS=""
 IUSE="+clang test"
 RESTRICT="!test? ( test ) !clang? ( test )"
 
@@ -29,6 +29,9 @@ CLANG_SLOT=${SLOT%%.*}
 DEPEND="
 	>=sys-devel/llvm-6
 	clang? ( sys-devel/clang )
+	test? (
+		$(python_gen_any_dep "dev-python/lit[\${PYTHON_USEDEP}]")
+		=sys-devel/clang-${PV%_*}*:${CLANG_SLOT} )
 	${PYTHON_DEPS}"
 
 # least intrusive of all
