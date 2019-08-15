@@ -5,4 +5,4 @@ LICENSE="MIT"
 
 SLOT="$PV"
 KEYWORDS="*"
-IUSE=""
+IUSE="nls 64-bit-bfd multitarget static-libs"
