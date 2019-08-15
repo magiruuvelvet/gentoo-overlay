@@ -1,0 +1,19 @@
+EAPI=7
+
+DESCRIPTION="compat wrapper for ld.bfd and ld.gold"
+LICENSE="MIT"
+
+SLOT="0"
+KEYWORDS="*"
+IUSE=""
+
+src_unpack() {
+    mkdir -p "${S}"
+}
+
+src_install() {
+    insinto /usr/bin
+
+    install -m755 "${FILESDIR}/ld.sh" "${ED}/usr/bin/ld.bfd"
+    install -m755 "${FILESDIR}/ld.sh" "${ED}/usr/bin/ld.gold"
+}
