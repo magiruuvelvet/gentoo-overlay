@@ -1,8 +1,14 @@
 EAPI=7
 
+inherit multilib-minimal
+
 DESCRIPTION="binutils stub for portage"
 LICENSE="MIT"
 
-SLOT="$PV"
+SLOT="0/${PV}"
 KEYWORDS="*"
-IUSE="nls 64-bit-bfd multitarget static-libs"
+IUSE="64-bit-bfd multitarget nls static-libs"
+
+src_unpack() {
+    mkdir -p "${S}"
+}
