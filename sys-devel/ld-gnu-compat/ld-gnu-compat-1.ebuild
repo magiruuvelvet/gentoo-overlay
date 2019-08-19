@@ -19,4 +19,7 @@ src_install() {
 
     install -m755 "${FILESDIR}/ldS.sh" "${ED}/usr/bin/ld.bfdS"
     install -m755 "${FILESDIR}/ldS.sh" "${ED}/usr/bin/ld.goldS"
+
+    install -m755 "${FILESDIR}/ld-orig.sh" "${ED}/usr/bin/ld.bfdO"
+    install -m755 "${FILESDIR}/ld-orig.sh" "${ED}/usr/bin/ld.goldO"
 }
