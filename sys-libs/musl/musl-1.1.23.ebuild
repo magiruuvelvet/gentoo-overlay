@@ -79,6 +79,9 @@ src_install() {
     cd "${S}/../x86_64"
     emake DESTDIR="${D}" install
 
+    # install additional symlink for the ELF loader
+    ln -s "/usr/musl/lib64/libc.so" "${D}/lib/ld-musl-x86_64.so.1"
+
     # install musl tools
     install -D -m755 "${FILESDIR}/ldd" "${D}/usr/musl/bin/ldd"
 
