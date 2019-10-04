@@ -14,7 +14,8 @@ DEPEND="
 "
 
 src_configure() {
-    ./autogen.sh
+    NOCONFIGURE=true ./autogen.sh
+    econf --prefix=/usr CFLAGS="-std=gnu99 ${CFLAGS}"
 }
 
 src_compile() {
