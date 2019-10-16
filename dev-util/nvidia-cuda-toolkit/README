@@ -1,2 +1,0 @@
-1:1 copy, with the only exception that the hard gcc dependency was removed
-clang 7.0 is also compatible with CUDA, no GNU compiler needed
