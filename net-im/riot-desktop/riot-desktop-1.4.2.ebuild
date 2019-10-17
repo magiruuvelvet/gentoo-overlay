@@ -5,8 +5,9 @@ EAPI=7
 
 inherit desktop xdg-utils
 
+# NOTE: Electron 6.x makes Riot lag
 ELECTRON_SLOT="5.0"
-ELECTRON_V="5.0.3"
+ELECTRON_V="5.0.11"
 MY_PV="${PV/_rc/-rc.}"
 
 DESCRIPTION="A glossy Matrix collaboration client for desktop"
