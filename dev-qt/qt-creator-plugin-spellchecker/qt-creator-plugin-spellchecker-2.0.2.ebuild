@@ -22,7 +22,7 @@ SRC_URI="https://github.com/CJCombrink/SpellChecker-Plugin/archive/v${PV}.tar.gz
 
 S="${WORKDIR}/SpellChecker-Plugin-${PV}"
 
-QT_CREATOR_VERSION="4.10.0_rc1"
+QT_CREATOR_VERSION="4.10.1"
 
 DEPEND="
     =dev-qt/qt-creator-$QT_CREATOR_VERSION
