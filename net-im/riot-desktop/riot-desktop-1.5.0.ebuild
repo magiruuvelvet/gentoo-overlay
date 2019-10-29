@@ -55,7 +55,7 @@ src_compile() {
 src_install() {
 	newbin "${FILESDIR}/${PN}-launcher.sh" "${PN}"
 	sed -i \
-		-e "s:@@ELECTRON@@:electron-${ELECTRON_SLOT}:" \
+		-e "s:@@ELECTRON@@:/usr/libexec/riot/electron/Riot:" \
 		-e "s:@@EPREFIX@@:${EPREFIX}:" \
 		"${ED}/usr/bin/${PN}" || die
 
@@ -86,9 +86,13 @@ src_install() {
 		newicon -s ${size} "electron_app/build/icons/${size}x${size}.png" riot.png
 	done
 	newicon -s scalable res/themes/riot/img/logos/riot-im-logo.svg riot.svg
-	make_desktop_entry "${PN}" Riot riot \
-		"Network;Chat;InstantMessaging;IRCClient" \
-		"Terminal=false\\nStartupNotify=true\\nStartupWMClass=Riot"
+
+	#make_desktop_entry "${PN}" Riot riot \
+	#	"Network;Chat;InstantMessaging;IRCClient" \
+	#	"Terminal=false\\nStartupNotify=true\\nStartupWMClass=Riot"
+
+	# copy custom desktop entry
+	cp "${FILESDIR}/riot-desktop-riot-desktop.desktop" "${ED}/usr/share/applications/riot-desktop-riot-desktop.desktop"
 }
 
 update_caches() {

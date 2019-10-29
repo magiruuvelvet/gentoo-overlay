@@ -1,3 +1,3 @@
 #!/bin/sh
 
-@@ELECTRON@@ @@EPREFIX@@/usr/libexec/riot/ "$@"
+exec @@ELECTRON@@ @@EPREFIX@@/usr/libexec/riot/ "$@"
