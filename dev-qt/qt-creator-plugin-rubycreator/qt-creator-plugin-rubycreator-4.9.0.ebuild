@@ -22,14 +22,12 @@ SRC_URI="https://github.com/hugopl/RubyCreator/archive/v${PV}.tar.gz -> ${PN}-${
 
 S="${WORKDIR}/RubyCreator-${PV}"
 
-QT_CREATOR_VERSION="4.10.1"
-
 DEPEND="
-    =dev-qt/qt-creator-$QT_CREATOR_VERSION
+    dev-qt/qt-creator
 "
 
 BDEPEND="
-    =dev-qt/qt-creator-src-$QT_CREATOR_VERSION
+    dev-qt/qt-creator-src
 "
 
 src_configure() {
