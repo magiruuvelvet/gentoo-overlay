@@ -22,8 +22,8 @@ DEPEND="
 
 S=${WORKDIR}
 
-#export PATH="/opt/gnu/bin:$PATH"
-export PATH="/opt/compat/bin:/opt/gnu/bin:$PATH"
+export PATH="/opt/gnu/bin:$PATH"
+#export PATH="/opt/compat/bin:/opt/gnu/bin:$PATH"
 
 pkg_setup() {
 	CONFIG_CHECK="~HIGH_RES_TIMERS"
