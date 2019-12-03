@@ -21,6 +21,10 @@ RDEPEND="
     sys-libs/zlib
 "
 
+PATCHES="
+    ${FILESDIR}/qt-5.13-update.patch
+"
+
 src_unpack() {
     unpack ${A}
     cd "${S}/.."
@@ -29,6 +33,7 @@ src_unpack() {
 
 src_configure() {
     mkdir -p build && cd build
+    export CMAKE_GENERATOR="Unix Makefiles"
     cmake \
         -DCMAKE_BUILD_TYPE=Release \
         -DCMAKE_INSTALL_PREFIX=/usr \
