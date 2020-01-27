@@ -96,6 +96,10 @@ for x in ${PLOCALES}; do
 done
 unset x
 
+PATCHES="
+    ${FILESDIR}/disable-boot2qt.patch
+"
+
 pkg_setup() {
 	use clang && llvm_pkg_setup
 }
