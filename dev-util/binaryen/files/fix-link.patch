@@ -1,0 +1,13 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index b338943..fc6d69f 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -11,6 +11,8 @@ endif()
+ # more useful error reports from users.
+ option(BYN_ENABLE_ASSERTIONS "Enable assertions" ON)
+ 
++add_compile_definitions("LLVM_ENABLE_DUMP=1")
++
+ find_package(Git QUIET REQUIRED)
+ execute_process(COMMAND
+              "${GIT_EXECUTABLE}" --git-dir=${CMAKE_CURRENT_SOURCE_DIR}/.git describe --tags
