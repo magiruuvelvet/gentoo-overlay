@@ -6,7 +6,7 @@ EAPI=7
 : ${CMAKE_MAKEFILE_GENERATOR:=ninja}
 # (needed due to CMAKE_BUILD_TYPE != Gentoo)
 CMAKE_MIN_VERSION=3.7.0-r1
-PYTHON_COMPAT=( python{2_7,3_{5,6,7}} )
+PYTHON_COMPAT=( python{3_6,3_7,3_8} )
 
 inherit cmake-utils git-r3 multilib-minimal multiprocessing pax-utils \
 	python-any-r1 toolchain-funcs
@@ -65,8 +65,8 @@ DEPEND="${RDEPEND}
 		>=sys-devel/binutils-apple-5.1
 	)
 	doc? ( $(python_gen_any_dep '
-		dev-python/recommonmark[${PYTHON_USEDEP}]
-		dev-python/sphinx[${PYTHON_USEDEP}]
+		dev-python/recommonmark
+		dev-python/sphinx
 	') )
 	gold? ( sys-libs/binutils-libs )
 	libffi? ( virtual/pkgconfig )
@@ -87,8 +87,8 @@ CMAKE_BUILD_TYPE=RelWithDebInfo
 python_check_deps() {
 	use doc || return 0
 
-	has_version "dev-python/recommonmark[${PYTHON_USEDEP}]" &&
-	has_version "dev-python/sphinx[${PYTHON_USEDEP}]"
+	has_version "dev-python/recommonmark" &&
+	has_version "dev-python/sphinx"
 }
 
 src_prepare() {
