@@ -45,10 +45,12 @@ src_prepare() {
 src_compile() {
 	# Build webapp
 	npm install --cache "${WORKDIR}/npm-cache" || die
+	yarn install --cache "${WORKDIR}/npm-cache" || die
 	npm run build --cache "${WORKDIR}/npm-cache" || die
 
 	pushd electron_app > /dev/null || die
 	npm install --cache "${WORKDIR}/npm-cache" || die
+	yarn install --cache "${WORKDIR}/npm-cache" || die
 	popd > /dev/null || die
 }
 
@@ -70,7 +72,6 @@ src_install() {
 
 	insinto /usr/libexec/riot
 	doins package.json
-	doins -r origin_migrator
 
 	dosym ../../share/riot /usr/libexec/riot/webapp
 
@@ -86,10 +87,6 @@ src_install() {
 		newicon -s ${size} "electron_app/build/icons/${size}x${size}.png" riot.png
 	done
 	newicon -s scalable res/themes/riot/img/logos/riot-im-logo.svg riot.svg
-
-	#make_desktop_entry "${PN}" Riot riot \
-	#	"Network;Chat;InstantMessaging;IRCClient" \
-	#	"Terminal=false\\nStartupNotify=true\\nStartupWMClass=Riot"
 
 	# copy custom desktop entry
 	mkdir -p "${ED}/usr/share/applications"
