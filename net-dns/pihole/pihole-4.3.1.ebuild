@@ -17,6 +17,7 @@ DEPEND="
 
 PATCHES=(
     "${FILESDIR}/makefile.patch"
+    "${FILESDIR}/nettle-3.5.patch"
 )
 
 # move files in place to make portage happy
@@ -29,7 +30,7 @@ src_unpack() {
 
 # patch static linking to dynamic linking
 src_prepare() {
-    patch Makefile < "${FILESDIR}/makefile.patch"
+    default
     eapply_user
 }
 
