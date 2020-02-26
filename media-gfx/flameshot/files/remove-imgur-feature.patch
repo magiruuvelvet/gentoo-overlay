@@ -1,0 +1,122 @@
+diff --git a/flameshot.pro b/flameshot.pro
+index 84a2e65..d2e1de7 100644
+--- a/flameshot.pro
++++ b/flameshot.pro
+@@ -95,7 +95,6 @@ SOURCES += src/main.cpp \
+     src/tools/circle/circletool.cpp \
+     src/tools/copy/copytool.cpp \
+     src/tools/exit/exittool.cpp \
+-    src/tools/imgur/imguruploadertool.cpp \
+     src/tools/line/linetool.cpp \
+     src/tools/marker/markertool.cpp \
+     src/tools/move/movetool.cpp \
+@@ -112,7 +111,6 @@ SOURCES += src/main.cpp \
+     src/cli/commandoption.cpp \
+     src/cli/commandargument.cpp \
+     src/utils/screenshotsaver.cpp \
+-    src/tools/imgur/imguruploader.cpp \
+     src/widgets/loadspinner.cpp \
+     src/widgets/imagelabel.cpp \
+     src/widgets/notificationwidget.cpp \
+@@ -169,7 +167,6 @@ HEADERS  += src/widgets/capture/buttonhandler.h \
+     src/tools/circle/circletool.h \
+     src/tools/copy/copytool.h \
+     src/tools/exit/exittool.h \
+-    src/tools/imgur/imguruploadertool.h \
+     src/tools/line/linetool.h \
+     src/tools/marker/markertool.h \
+     src/tools/move/movetool.h \
+@@ -185,7 +182,6 @@ HEADERS  += src/widgets/capture/buttonhandler.h \
+     src/cli/commandoption.h \
+     src/cli/commandargument.h \
+     src/utils/screenshotsaver.h \
+-    src/tools/imgur/imguruploader.h \
+     src/widgets/loadspinner.h \
+     src/widgets/imagelabel.h \
+     src/widgets/notificationwidget.h \
+@@ -286,6 +282,3 @@ unix:!macx {
+         completion \
+         appdata
+ }
+-
+-# Imgur API data
+-include(src/imgur.pri)
+diff --git a/src/imgur.pri b/src/imgur.pri
+deleted file mode 100644
+index 6e34b1e..0000000
+--- a/src/imgur.pri
++++ /dev/null
+@@ -1,7 +0,0 @@
+-# Use default Imgur client_id if user did not pass
+-# this variable to qmake
+-isEmpty(IMGUR_CLIENT_ID) {
+-    IMGUR_CLIENT_ID = "313baf0c7b4d3ff"
+-}
+-
+-DEFINES += IMGUR_CLIENT_ID=\\\"$${IMGUR_CLIENT_ID}\\\"
+diff --git a/src/tools/toolfactory.cpp b/src/tools/toolfactory.cpp
+index 23c5032..5aad44c 100644
+--- a/src/tools/toolfactory.cpp
++++ b/src/tools/toolfactory.cpp
+@@ -20,7 +20,6 @@
+ #include "circle/circletool.h"
+ #include "copy/copytool.h"
+ #include "exit/exittool.h"
+-#include "imgur/imguruploadertool.h"
+ #include "line/linetool.h"
+ #include "marker/markertool.h"
+ #include "move/movetool.h"
+@@ -58,9 +57,6 @@ CaptureTool* ToolFactory::CreateTool(
+     case CaptureButton::TYPE_EXIT:
+         tool = new ExitTool(parent);
+         break;
+-    case CaptureButton::TYPE_IMAGEUPLOADER:
+-        tool = new ImgurUploaderTool(parent);
+-        break;
+     case CaptureButton::TYPE_DRAWER:
+         tool = new LineTool(parent);
+         break;
+diff --git a/src/utils/confighandler.cpp b/src/utils/confighandler.cpp
+index 14f3e55..1c98030 100644
+--- a/src/utils/confighandler.cpp
++++ b/src/utils/confighandler.cpp
+@@ -53,7 +53,6 @@ QVector<CaptureButton::ButtonType> ConfigHandler::getButtons() {
+                 << CaptureButton::TYPE_COPY
+                 << CaptureButton::TYPE_SAVE
+                 << CaptureButton::TYPE_EXIT
+-                << CaptureButton::TYPE_IMAGEUPLOADER
+                 << CaptureButton::TYPE_OPEN_APP
+                 << CaptureButton::TYPE_PIN
+                 << CaptureButton::TYPE_TEXT;
+diff --git a/src/widgets/capture/capturebutton.cpp b/src/widgets/capture/capturebutton.cpp
+index 8a80966..397707a 100644
+--- a/src/widgets/capture/capturebutton.cpp
++++ b/src/widgets/capture/capturebutton.cpp
+@@ -163,7 +163,6 @@ static std::map<CaptureButton::ButtonType, int> buttonTypeOrder {
+     { CaptureButton::TYPE_COPY,              13 },
+     { CaptureButton::TYPE_SAVE,              14 },
+     { CaptureButton::TYPE_EXIT,              15 },
+-    { CaptureButton::TYPE_IMAGEUPLOADER,     16 },
+     { CaptureButton::TYPE_OPEN_APP,          17 },
+     { CaptureButton::TYPE_PIN,               18 },
+ };
+@@ -190,7 +189,6 @@ QVector<CaptureButton::ButtonType> CaptureButton::iterableButtonTypes = {
+     CaptureButton::TYPE_COPY,
+     CaptureButton::TYPE_SAVE,
+     CaptureButton::TYPE_EXIT,
+-    CaptureButton::TYPE_IMAGEUPLOADER,
+     CaptureButton::TYPE_OPEN_APP,
+     CaptureButton::TYPE_PIN,
+ };
+diff --git a/src/widgets/capture/capturebutton.h b/src/widgets/capture/capturebutton.h
+index 4ca4b88..f06e1bc 100644
+--- a/src/widgets/capture/capturebutton.h
++++ b/src/widgets/capture/capturebutton.h
+@@ -45,7 +45,6 @@ public:
+         TYPE_COPY = 10,
+         TYPE_SAVE = 11,
+         TYPE_EXIT = 12,
+-        TYPE_IMAGEUPLOADER = 13,
+         TYPE_OPEN_APP = 14,
+         TYPE_BLUR = 15,
+         TYPE_REDO = 16,
