@@ -1,0 +1,24 @@
+diff --git a/nv_vulkan_wrapper.cpp b/nv_vulkan_wrapper.cpp
+index 6194974..556251a 100644
+--- a/nv_vulkan_wrapper.cpp
++++ b/nv_vulkan_wrapper.cpp
+@@ -8,7 +8,7 @@ extern "C" VKAPI_ATTR VkResult VKAPI_CALL vk_icdNegotiateLoaderICDInterfaceVersi
+ 
+ 
+ #ifndef NV_DRIVER_PATH
+-#define NV_DRIVER_PATH "/usr/lib/x86_64-linux-gnu/nvidia/current/libGL.so.1"
++#define NV_DRIVER_PATH "/usr/lib64/opengl/nvidia/lib/libGLX_nvidia.so.0"
+ #endif
+ 
+ class StaticInitialize {
+diff --git a/pvkrun.in.sh b/pvkrun.in.sh
+index 4767033..10fba7d 100644
+--- a/pvkrun.in.sh
++++ b/pvkrun.in.sh
+@@ -1,2 +1,5 @@
+ #!/bin/sh
+-ENABLE_PRIMUS_LAYER=1 exec primusrun "$@"
++export LD_LIBRARY_PATH="/usr/lib64/opengl/nvidia/lib:/usr/lib32/opengl/nvidia/lib:/usr/lib/opengl/nvidia/lib:$LD_LIBRARY_PATH"
++export VK_ICD_FILENAMES="/usr/share/vulkan/icd.d/intel_icd.x86_64.json:/etc/vulkan/icd.d/nv_vulkan_wrapper.json"
++export ENABLE_PRIMUS_LAYER=1
++exec primusrun "$@"
