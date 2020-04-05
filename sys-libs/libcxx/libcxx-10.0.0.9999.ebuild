@@ -1,45 +1,35 @@
-# Copyright 1999-2019 Gentoo Authors
+# Copyright 1999-2020 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=6
+EAPI=7
 
-# Ninja provides better scalability and cleaner verbose output, and is used
-# throughout all LLVM projects.
-: ${CMAKE_MAKEFILE_GENERATOR:=ninja}
-# (needed due to CMAKE_BUILD_TYPE != Gentoo)
-CMAKE_MIN_VERSION=3.7.0-r1
-PYTHON_COMPAT=( python2_7 )
-
-inherit cmake-multilib llvm multiprocessing python-any-r1 \
+PYTHON_COMPAT=( python3_{6,7} )
+inherit cmake-multilib llvm llvm.org multiprocessing python-any-r1 \
 	toolchain-funcs
 
-MY_P=${P}.src
 DESCRIPTION="New implementation of the C++ standard library, targeting C++11"
 HOMEPAGE="https://libcxx.llvm.org/"
-SRC_URI="https://github.com/llvm/llvm-project/releases/download/llvmorg-${PV}/${MY_P}.tar.xz"
+LLVM_COMPONENTS=( libcxx )
+llvm.org_set_globals
 
-LICENSE="|| ( UoI-NCSA MIT )"
+LICENSE="Apache-2.0-with-LLVM-exceptions || ( UoI-NCSA MIT )"
 SLOT="0"
-KEYWORDS="~amd64 ~arm ~arm64 ~x86 ~amd64-fbsd"
-IUSE="elibc_glibc elibc_musl +libcxxabi libcxxrt +libunwind +static-libs test"
-REQUIRED_USE="libunwind? ( || ( libcxxabi libcxxrt ) )
-	?? ( libcxxabi libcxxrt )"
+KEYWORDS=""
+IUSE="elibc_glibc elibc_musl +libcxxabi +libunwind +static-libs test"
+REQUIRED_USE="libunwind? ( libcxxabi )"
 RESTRICT="!test? ( test )"
 
 RDEPEND="
 	libcxxabi? ( ~sys-libs/libcxxabi-${PV}[libunwind=,static-libs?,${MULTILIB_USEDEP}] )
-	libcxxrt? ( sys-libs/libcxxrt[libunwind=,static-libs?,${MULTILIB_USEDEP}] )
-	!libcxxabi? ( !libcxxrt? ( >=sys-devel/gcc-4.7:=[cxx] ) )"
+	!libcxxabi? ( >=sys-devel/gcc-4.7:=[cxx] )"
 # llvm-6 for new lit options
 # clang-3.9.0 installs necessary target symlinks unconditionally
 # which removes the need for MULTILIB_USEDEP
 DEPEND="${RDEPEND}
-	test? ( >=sys-devel/clang-3.9.0
-		$(python_gen_any_dep 'dev-python/lit[${PYTHON_USEDEP}]') )
-	app-arch/xz-utils
 	>=sys-devel/llvm-6"
-
-S=${WORKDIR}/${MY_P}
+BDEPEND="
+	test? ( >=sys-devel/clang-3.9.0
+		$(python_gen_any_dep 'dev-python/lit[${PYTHON_USEDEP}]') )"
 
 DOCS=( CREDITS.TXT )
 
@@ -60,7 +50,7 @@ pkg_setup() {
 	llvm_pkg_setup
 	use test && python-any-r1_pkg_setup
 
-	if ! use libcxxabi && ! use libcxxrt && ! tc-is-gcc ; then
+	if ! use libcxxabi && ! tc-is-gcc ; then
 		eerror "To build ${PN} against libsupc++, you have to use gcc. Other"
 		eerror "compilers are not supported. Please set CC=gcc and CXX=g++"
 		eerror "and try again."
@@ -82,20 +72,8 @@ test_compiler() {
 src_configure() {
     echo "USING CUSTOM PATCHED VERSION"
 
-	# note: we need to do this before multilib kicks in since it will
-	# alter the CHOST
-	local cxxabi cxxabi_incs
-	if use libcxxabi; then
-		cxxabi=libcxxabi
-		cxxabi_incs="${EPREFIX}/usr/include/libcxxabi"
-	elif use libcxxrt; then
-		cxxabi=libcxxrt
-		cxxabi_incs="${EPREFIX}/usr/include/libcxxrt"
-	else
-		local gcc_inc="${EPREFIX}/usr/lib/gcc/${CHOST}/$(gcc-fullversion)/include/g++-v$(gcc-major-version)"
-		cxxabi=libsupc++
-		cxxabi_incs="${gcc_inc};${gcc_inc}/${CHOST}"
-	fi
+    cxxabi=libcxxabi
+    cxxabi_incs="${EPREFIX}/usr/include/libcxxabi"
 
 	multilib-minimal_src_configure
 }
@@ -103,7 +81,7 @@ src_configure() {
 multilib_src_configure() {
 	# we want -lgcc_s for unwinder, and for compiler runtime when using
 	# gcc, clang with gcc runtime (or any unknown compiler)
-	local extra_libs=() want_gcc_s=ON
+	local extra_libs=() want_gcc_s=ON want_compiler_rt=OFF
 	if use libunwind; then
 		# work-around missing -lunwind upstream
 		extra_libs+=( -lunwind )
@@ -114,6 +92,7 @@ multilib_src_configure() {
 			   ${LDFLAGS} -print-libgcc-file-name)
 			if [[ ${compiler_rt} == *libclang_rt* ]]; then
 				want_gcc_s=OFF
+				want_compiler_rt=ON
 				extra_libs+=( "${compiler_rt}" )
 			fi
 		fi
@@ -139,8 +118,9 @@ multilib_src_configure() {
 		# we're using our own mechanism for generating linker scripts
 		-DLIBCXX_ENABLE_ABI_LINKER_SCRIPT=OFF
 		-DLIBCXX_HAS_MUSL_LIBC=$(usex elibc_musl)
-		-DLIBCXX_HAS_GCC_S_LIB=${want_gcc_s}
+		-DLIBCXX_HAS_GCC_S_LIB=OFF
 		-DLIBCXX_INCLUDE_TESTS=$(usex test)
+		-DLIBCXX_USE_COMPILER_RT=${want_compiler_rt}
 		-DCMAKE_SHARED_LINKER_FLAGS="${extra_libs[*]} ${LDFLAGS}"
 	)
 
@@ -159,6 +139,7 @@ multilib_src_configure() {
 }
 
 multilib_src_test() {
+	local -x LIT_PRESERVES_TMP=1
 	cmake-utils_src_make check-libcxx
 }
 
@@ -179,7 +160,7 @@ END_LDSCRIPT
 
 gen_static_ldscript() {
 	local libdir=$(get_libdir)
-	local cxxabi_lib=$(usex libcxxabi "libc++abi.a" "$(usex libcxxrt "libcxxrt.a" "libsupc++.a")")
+	local cxxabi_lib=$(usex libcxxabi "libc++abi.a" "libsupc++.a")
 
 	# Move it first.
 	mv "${ED}/usr/${libdir}/libc++.a" "${ED}/usr/${libdir}/libc++_static.a" || die
@@ -196,7 +177,7 @@ gen_static_ldscript() {
 gen_shared_ldscript() {
 	local libdir=$(get_libdir)
 	# libsupc++ doesn't have a shared version
-	local cxxabi_lib=$(usex libcxxabi "libc++abi.so" "$(usex libcxxrt "libcxxrt.so" "libsupc++.a")")
+	local cxxabi_lib=$(usex libcxxabi "libc++abi.so" "libsupc++.a")
 
 	mv "${ED}/usr/${libdir}/libc++.so" "${ED}/usr/${libdir}/libc++_shared.so" || die
 	local deps="libc++_shared.so ${cxxabi_lib} $(usex libunwind libunwind.so libgcc_s.so)"

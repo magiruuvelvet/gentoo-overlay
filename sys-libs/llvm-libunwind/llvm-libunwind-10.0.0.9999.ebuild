@@ -1,39 +1,30 @@
-# Copyright 1999-2019 Gentoo Authors
+# Copyright 1999-2020 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=6
+EAPI=7
 
-: ${CMAKE_MAKEFILE_GENERATOR:=ninja}
-# (needed due to CMAKE_BUILD_TYPE != Gentoo)
-CMAKE_MIN_VERSION=3.7.0-r1
-PYTHON_COMPAT=( python{2_7,3_5,3_6} )
-inherit cmake-multilib llvm multiprocessing python-any-r1
-
-MY_P=libunwind-${PV/_/}.src
-LIBCXX_P=libcxx-${PV/_/}.src
-LIBCXXABI_P=libcxxabi-${PV/_/}.src
+PYTHON_COMPAT=( python3_{6,7} )
+inherit cmake-multilib llvm llvm.org multiprocessing python-any-r1
 
 DESCRIPTION="C++ runtime stack unwinder from LLVM"
 HOMEPAGE="https://github.com/llvm-mirror/libunwind"
-SRC_URI="https://github.com/llvm/llvm-project/releases/download/llvmorg-${PV}/${MY_P}.tar.xz
-	test? (
-		https://github.com/llvm/llvm-project/releases/download/llvmorg-${PV}/${LIBCXX_P}.tar.xz
-		https://github.com/llvm/llvm-project/releases/download/llvmorg-${PV}/${LIBCXXABI_P}.tar.xz )"
+LLVM_COMPONENTS=( libunwind )
+LLVM_TEST_COMPONENTS=( libcxx{,abi} )
+llvm.org_set_globals
 
-LICENSE="|| ( UoI-NCSA MIT )"
+LICENSE="Apache-2.0-with-LLVM-exceptions || ( UoI-NCSA MIT )"
 SLOT="0"
-KEYWORDS="~amd64 ~arm ~arm64 ~x86 ~amd64-fbsd"
+KEYWORDS=""
 IUSE="debug +static-libs test"
 RESTRICT="!test? ( test )"
 
 RDEPEND="!sys-libs/libunwind"
 # llvm-6 for new lit options
 DEPEND="
-	>=sys-devel/llvm-6
+	>=sys-devel/llvm-6"
+BDEPEND="
 	test? ( >=sys-devel/clang-3.9.0
 		$(python_gen_any_dep 'dev-python/lit[${PYTHON_USEDEP}]') )"
-
-S=${WORKDIR}/${MY_P}
 
 # least intrusive of all
 CMAKE_BUILD_TYPE=RelWithDebInfo
@@ -44,15 +35,6 @@ python_check_deps() {
 
 pkg_setup() {
 	use test && python-any-r1_pkg_setup
-}
-
-src_unpack() {
-	default
-
-	if use test; then
-		mv "${LIBCXX_P}" libcxx || die
-		mv "${LIBCXXABI_P}" libcxxabi || die
-	fi
 }
 
 multilib_src_configure() {
@@ -83,7 +65,7 @@ multilib_src_configure() {
 		mycmakeargs+=(
 			-DLLVM_EXTERNAL_LIT="${EPREFIX}/usr/bin/lit"
 			-DLLVM_LIT_ARGS="-vv;-j;${jobs};--param=cxx_under_test=${clang_path}"
-			-DLIBUNWIND_LIBCXX_PATH="${WORKDIR}"/libcxx
+			-DLIBUNWIND_LIBCXX_PATH="${WORKDIR}/libcxx"
 		)
 	fi
 
@@ -96,14 +78,15 @@ build_libcxxabi() {
 	local BUILD_DIR=${BUILD_DIR}/libcxxabi
 	local mycmakeargs=(
 		-DLIBCXXABI_LIBDIR_SUFFIX=
-		-DLIBCXXABI_ENABLE_SHARED=ON
-		-DLIBCXXABI_ENABLE_STATIC=OFF
+		-DLIBCXXABI_ENABLE_SHARED=OFF
+		-DLIBCXXABI_ENABLE_STATIC=ONF
 		-DLIBCXXABI_USE_LLVM_UNWINDER=ON
 		-DLIBCXXABI_INCLUDE_TESTS=OFF
 
 		-DLIBCXXABI_LIBCXX_INCLUDES="${WORKDIR}"/libcxx/include
 		-DLIBCXXABI_LIBUNWIND_INCLUDES="${S}"/include
 		-DLIBCXXABI_USE_COMPILER_RT=ON
+		-DLLVM_ENABLE_LIBCXX=ON
 	)
 
 	cmake-utils_src_configure
@@ -116,8 +99,8 @@ build_libcxx() {
 	local BUILD_DIR=${BUILD_DIR}/libcxx
 	local mycmakeargs=(
 		-DLIBCXX_LIBDIR_SUFFIX=
-		-DLIBCXX_ENABLE_SHARED=ON
-		-DLIBCXX_ENABLE_STATIC=OFF
+		-DLIBCXX_ENABLE_SHARED=OFF
+		-DLIBCXX_ENABLE_STATIC=ON
 		-DLIBCXX_ENABLE_EXPERIMENTAL_LIBRARY=OFF
 		-DLIBCXXABI_USE_LLVM_UNWINDER=ON
 		-DLIBCXX_CXX_ABI=libcxxabi
@@ -140,6 +123,7 @@ multilib_src_test() {
 	build_libcxx
 	mv "${BUILD_DIR}"/libcxx*/lib/libc++* "${BUILD_DIR}/$(get_libdir)/" || die
 
+	local -x LIT_PRESERVES_TMP=1
 	cmake-utils_src_make check-unwind
 }
 

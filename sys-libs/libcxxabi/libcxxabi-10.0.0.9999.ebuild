@@ -1,26 +1,20 @@
-# Copyright 1999-2019 Gentoo Authors
+# Copyright 1999-2020 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=6
+EAPI=7
 
-: ${CMAKE_MAKEFILE_GENERATOR:=ninja}
-# (needed due to CMAKE_BUILD_TYPE != Gentoo)
-CMAKE_MIN_VERSION=3.7.0-r1
-PYTHON_COMPAT=( python2_7 )
-
-inherit cmake-multilib llvm multiprocessing python-any-r1
-
-MY_P=${P/_/}.src
-LIBCXX_P=libcxx-${PV/_/}.src
+PYTHON_COMPAT=( python3_{6,7} )
+inherit cmake-multilib llvm llvm.org multiprocessing python-any-r1 toolchain-funcs
 
 DESCRIPTION="Low level support for a standard C++ library"
 HOMEPAGE="https://libcxxabi.llvm.org/"
-SRC_URI="https://github.com/llvm/llvm-project/releases/download/llvmorg-${PV}/${MY_P}.tar.xz
-	https://github.com/llvm/llvm-project/releases/download/llvmorg-${PV}/${LIBCXX_P}.tar.xz"
+# libcxx is needed uncondtionally for the headers
+LLVM_COMPONENTS=( libcxx{abi,} )
+llvm.org_set_globals
 
-LICENSE="|| ( UoI-NCSA MIT )"
+LICENSE="Apache-2.0-with-LLVM-exceptions || ( UoI-NCSA MIT )"
 SLOT="0"
-KEYWORDS="~amd64 ~arm ~arm64 ~x86 ~amd64-fbsd"
+KEYWORDS=""
 IUSE="+libunwind +static-libs test elibc_musl"
 RESTRICT="!test? ( test )"
 
@@ -33,11 +27,10 @@ RDEPEND="
 	)"
 # llvm-6 for new lit options
 DEPEND="${RDEPEND}
-	>=sys-devel/llvm-6
+	>=sys-devel/llvm-6"
+BDEPEND="
 	test? ( >=sys-devel/clang-3.9.0
 		$(python_gen_any_dep 'dev-python/lit[${PYTHON_USEDEP}]') )"
-
-S=${WORKDIR}/${MY_P}
 
 # least intrusive of all
 CMAKE_BUILD_TYPE=RelWithDebInfo
@@ -51,13 +44,18 @@ pkg_setup() {
 	use test && python-any-r1_pkg_setup
 }
 
-src_unpack() {
-	default
-	mv "${LIBCXX_P}" libcxx || die
-}
-
 multilib_src_configure() {
     echo "USING CUSTOM PATCHED VERSION"
+
+	# link against compiler-rt instead of libgcc if we are using clang with libunwind
+	local want_compiler_rt=OFF
+	if use libunwind && tc-is-clang; then
+		local compiler_rt=$($(tc-getCC) ${CFLAGS} ${CPPFLAGS} \
+			${LDFLAGS} -print-libgcc-file-name)
+		if [[ ${compiler_rt} == *libclang_rt* ]]; then
+			want_compiler_rt=ON
+		fi
+	fi
 
 	local libdir=$(get_libdir)
 	local mycmakeargs=(
@@ -66,6 +64,7 @@ multilib_src_configure() {
 		-DLIBCXXABI_ENABLE_STATIC=$(usex static-libs)
 		-DLIBCXXABI_USE_LLVM_UNWINDER=$(usex libunwind)
 		-DLIBCXXABI_INCLUDE_TESTS=$(usex test)
+		-DLIBCXXABI_USE_COMPILER_RT=${want_compiler_rt}
 
 		-DLIBCXXABI_LIBCXX_INCLUDES="${WORKDIR}"/libcxx/include
 		# upstream is omitting standard search path for this
@@ -93,8 +92,8 @@ build_libcxx() {
 	local BUILD_DIR=${BUILD_DIR}/libcxx
 	local mycmakeargs=(
 		-DLIBCXX_LIBDIR_SUFFIX=
-		-DLIBCXX_ENABLE_SHARED=ON
-		-DLIBCXX_ENABLE_STATIC=OFF
+		-DLIBCXX_ENABLE_SHARED=OFF
+		-DLIBCXX_ENABLE_STATIC=ON
 		-DLIBCXX_ENABLE_EXPERIMENTAL_LIBRARY=OFF
 		-DLIBCXX_CXX_ABI=libcxxabi
 		-DLIBCXX_CXX_ABI_INCLUDE_PATHS="${S}"/include
@@ -114,6 +113,7 @@ multilib_src_test() {
 	build_libcxx
 	mv "${BUILD_DIR}"/libcxx/lib/libc++* "${BUILD_DIR}/$(get_libdir)/" || die
 
+	local -x LIT_PRESERVES_TMP=1
 	cmake-utils_src_make check-libcxxabi
 }
 

@@ -1,41 +1,41 @@
-# Copyright 1999-2019 Gentoo Authors
+# Copyright 1999-2020 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=6
+EAPI=7
 
-: ${CMAKE_MAKEFILE_GENERATOR:=ninja}
-# (needed due to CMAKE_BUILD_TYPE != Gentoo)
-CMAKE_MIN_VERSION=3.7.0-r1
-PYTHON_COMPAT=( python2_7 )
-
-inherit cmake-utils flag-o-matic llvm multiprocessing \
+PYTHON_COMPAT=( python3_{6,7,8} )
+inherit cmake-utils flag-o-matic llvm llvm.org multiprocessing \
 	python-any-r1 toolchain-funcs
 
-MY_P=${P}.src
 DESCRIPTION="Compiler runtime library for clang (built-in part)"
 HOMEPAGE="https://llvm.org/"
-SRC_URI="https://github.com/llvm/llvm-project/releases/download/llvmorg-${PV}/${MY_P}.tar.xz"
+LLVM_COMPONENTS=( compiler-rt )
+llvm.org_set_globals
 
-LICENSE="|| ( UoI-NCSA MIT )"
-SLOT="${PV%_*}"
-KEYWORDS="~amd64 ~arm ~arm64 ~ppc64 ~x86 ~amd64-fbsd ~amd64-linux ~ppc-macos ~x64-macos ~x86-macos"
+LICENSE="Apache-2.0-with-LLVM-exceptions || ( UoI-NCSA MIT )"
+SLOT="$(ver_cut 1-3)"
+KEYWORDS=""
 IUSE="+clang test"
 RESTRICT="!test? ( test ) !clang? ( test )"
 
 CLANG_SLOT=${SLOT%%.*}
 # llvm-6 for new lit options
 DEPEND="
-	>=sys-devel/llvm-6
+	>=sys-devel/llvm-6"
+BDEPEND="
 	clang? ( sys-devel/clang )
 	test? (
-		$(python_gen_any_dep "dev-python/lit[\${PYTHON_USEDEP}]")
+		$(python_gen_any_dep ">=dev-python/lit-9.0.1[\${PYTHON_USEDEP}]")
 		=sys-devel/clang-${PV%_*}*:${CLANG_SLOT} )
 	${PYTHON_DEPS}"
 
-S=${WORKDIR}/${MY_P}
-
 # least intrusive of all
 CMAKE_BUILD_TYPE=RelWithDebInfo
+
+python_check_deps() {
+	use test || return 0
+	has_version "dev-python/lit[${PYTHON_USEDEP}]"
+}
 
 pkg_pretend() {
 	if ! use clang && ! tc-is-clang; then
@@ -64,9 +64,9 @@ src_configure() {
 	if use clang; then
 		local -x CC=${CHOST}-clang
 		local -x CXX=${CHOST}-clang++
+		strip-unsupported-flags
 		# ensure we can use clang before installing compiler-rt
 		local -x LDFLAGS="${LDFLAGS} ${nolib_flags[*]}"
-		strip-unsupported-flags
 	elif ! test_compiler; then
 		if test_compiler "${nolib_flags[@]}"; then
 			local -x LDFLAGS="${LDFLAGS} ${nolib_flags[*]}"
