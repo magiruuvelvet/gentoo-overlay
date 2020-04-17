@@ -41,10 +41,14 @@ src_prepare() {
 	default
 }
 
+src_configure() {
+    # Install dependencies
+    npm install --cache "${WORKDIR}/npm-cache" || die
+    yarn install --cache "${WORKDIR}/npm-cache" || die
+}
+
 src_compile() {
 	# Build webapp
-	npm install --cache "${WORKDIR}/npm-cache" || die
-	yarn install --cache "${WORKDIR}/npm-cache" || die
 	npm run build --cache "${WORKDIR}/npm-cache" || die
 
 	pushd electron_app > /dev/null || die
