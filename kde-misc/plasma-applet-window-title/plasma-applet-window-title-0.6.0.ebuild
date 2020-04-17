@@ -1,6 +1,6 @@
 EAPI=7
 
-inherit kde5
+inherit kde.org
 
 DESCRIPTION="Plasma 5 applet that shows the application title and icon for active window"
 HOMEPAGE="https://github.com/psifidotos/applet-window-title"
@@ -20,7 +20,7 @@ fi
 IUSE=""
 
 DEPEND="
-    $(add_plasma_dep plasma-workspace)
+    kde-plasma/plasma-workspace
 "
 RDEPEND="${DEPEND}"
 

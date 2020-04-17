@@ -3,7 +3,7 @@ EAPI=7
 PLASMA_MINIMAL="5.12"
 QT_MINIMAL="5.9"
 FRAMEWORKS_MINIMAL="5.38"
-inherit kde5
+inherit kde.org
 
 MY_PN="${PN/plasma-}"
 
@@ -25,9 +25,9 @@ fi
 IUSE=""
 
 DEPEND="
-	$(add_frameworks_dep plasma)
-	$(add_frameworks_dep frameworkintegration)
-	$(add_qt_dep qdbus)
+	kde-frameworks/plasma
+	kde-frameworks/frameworkintegration
+	dev-qt/qtdbus
 	x11-libs/libxcb
 "
 RDEPEND="${DEPEND}"
