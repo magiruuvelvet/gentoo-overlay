@@ -3,7 +3,8 @@ EAPI=7
 PLASMA_MINIMAL="5.12"
 QT_MINIMAL="5.9"
 FRAMEWORKS_MINIMAL="5.38"
-inherit kde.org
+SLOT=0
+inherit ecm kde.org
 
 MY_PN="${PN/plasma-}"
 

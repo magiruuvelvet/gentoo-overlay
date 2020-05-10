@@ -4,6 +4,7 @@ inherit kde.org
 
 DESCRIPTION="Plasma 5 applet that shows the application title and icon for active window"
 HOMEPAGE="https://github.com/psifidotos/applet-window-title"
+SLOT=0
 
 S="${WORKDIR}/applet-window-title-${PV}"
 
