@@ -6,7 +6,7 @@ DESCRIPTION="Vulkan GPU-offloading layer"
 HOMEPAGE="https://github.com/felixdoerre/primus_vk"
 SRC_URI=""
 EGIT_REPO_URI="https://github.com/felixdoerre/primus_vk.git"
-EGIT_BRANCH="preview_cleanup"
+EGIT_BRANCH="master"
 
 LICENSE="BSD-2"
 SLOT="0"
