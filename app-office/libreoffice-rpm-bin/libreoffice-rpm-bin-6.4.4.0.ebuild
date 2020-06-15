@@ -12,7 +12,7 @@
 
 EAPI=7
 
-SRC_URI="https://storage.magiruuvelvet.gdn/ebuild/${P}.zip"
+SRC_URI="https://storage.magiruuvelvet.gdn/ebuild/${P}.tar.gz"
 
 SLOT="0"
 KEYWORDS="*"
