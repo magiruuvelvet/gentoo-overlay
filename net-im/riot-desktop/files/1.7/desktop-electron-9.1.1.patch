@@ -1,0 +1,13 @@
+diff --git a/package.json b/package.json
+index 074dcc0..063db52 100644
+--- a/package.json
++++ b/package.json
+@@ -64,7 +64,7 @@
+   },
+   "build": {
+     "appId": "im.riot.app",
+-    "electronVersion": "9.0.5",
++    "electronVersion": "9.1.1",
+     "files": [
+       "package.json",
+       {

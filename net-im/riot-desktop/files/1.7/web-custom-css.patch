@@ -1,0 +1,12 @@
+diff --git a/src/vector/index.html b/src/vector/index.html
+index 4cda4b3..a763bbc 100644
+--- a/src/vector/index.html
++++ b/src/vector/index.html
+@@ -49,6 +49,7 @@
+            <link rel="stylesheet" href="<%= file %>">
+         <% }
+     } %>
++    <link rel="stylesheet" href="custom.css">
+   </head>
+   <body style="height: 100%; margin: 0;" data-vector-indexeddb-worker-script="<%= htmlWebpackPlugin.files.chunks['indexeddb-worker'].entry %>">
+     <noscript>Sorry, Element requires JavaScript to be enabled.</noscript> <!-- TODO: Translate this? -->
