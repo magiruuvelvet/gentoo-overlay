@@ -2,16 +2,23 @@
 
 EAPI=7
 SLOT="0"
-KEYWORDS="amd64"
+KEYWORDS="amd64 x86"
 
-inherit llvm
+inherit llvm multilib multilib-minimal
 
 src_unpack() {
     mkdir "$S"
 }
 
-src_configure() {
-    :
+# src_configure() {
+#     :
+# }
+
+multilib_src_configure() {
+    echo "$(tc-getCXX)"
+    echo "$(tc-getBUILD_CXX)"
+
+    echo "$(tc-getPKG_CONFIG)"
 }
 
 src_install() {
