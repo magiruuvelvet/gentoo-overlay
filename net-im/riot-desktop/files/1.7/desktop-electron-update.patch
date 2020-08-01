@@ -7,7 +7,7 @@ index 074dcc0..063db52 100644
    "build": {
      "appId": "im.riot.app",
 -    "electronVersion": "9.0.5",
-+    "electronVersion": "9.1.1",
++    "electronVersion": "10.0.0-beta.14",
      "files": [
        "package.json",
        {

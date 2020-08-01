@@ -72,7 +72,7 @@ src_prepare() {
 
     popd || die
     git apply "${FILESDIR}/1.7/desktop-remove-tests-and-linter.patch" || die
-    git apply "${FILESDIR}/1.7/desktop-electron-9.1.1.patch" || die
+    git apply "${FILESDIR}/1.7/desktop-electron-update.patch" || die
     yarn install || die
 }
 
