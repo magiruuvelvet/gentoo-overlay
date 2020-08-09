@@ -10,7 +10,7 @@ EGIT_REPO_URI="https://github.com/magiruuvelvet/qelement.git"
 LICENSE=""
 SLOT="0"
 KEYWORDS="amd64"
-IUSE="+libnotify"
+IUSE="+libnotify +translations"
 
 # custom build types are not supported by this project
 CMAKE_BUILD_TYPE=Release
@@ -22,6 +22,7 @@ DEPEND="
     dev-qt/qtnetwork
     dev-qt/qtconcurrent
     dev-qt/qtwebengine
+    translations? ( dev-qt/linguist-tools )
     libnotify? ( x11-libs/libnotify )
 "
 RDEPEND="${DEPEND}"
@@ -29,6 +30,7 @@ RDEPEND="${DEPEND}"
 src_configure() {
     local mycmakeargs=(
         -DENABLE_LIBNOTIFY=$(usex libnotify)
+        -DBUILD_TRANSLATIONS=$(usex translations)
     )
 
     cmake-utils_src_configure
