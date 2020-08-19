@@ -1,5 +1,5 @@
 diff --git a/package.json b/package.json
-index 27a298c..9f4d6fd 100644
+index 67a4cf0..c1b7fef 100644
 --- a/package.json
 +++ b/package.json
 @@ -48,12 +48,7 @@
@@ -16,30 +16,28 @@ index 27a298c..9f4d6fd 100644
    },
    "dependencies": {
      "browser-request": "^0.3.3",
-@@ -92,7 +87,6 @@
+@@ -92,20 +87,12 @@
      "@types/react": "16.9",
      "@types/react-dom": "^16.9.4",
      "autoprefixer": "^9.7.3",
 -    "babel-eslint": "^10.0.3",
-     "babel-jest": "^24.9.0",
+-    "babel-jest": "^24.9.0",
      "babel-loader": "^8.0.6",
      "canvas": "^2.6.1",
-@@ -100,14 +94,6 @@
+     "chokidar": "^3.3.1",
      "concurrently": "^4.0.1",
      "cpx": "^1.3.2",
      "css-loader": "^3.3.2",
 -    "eslint": "7.3.1",
--    "eslint-config-google": "^0.7.1",
 -    "eslint-config-matrix-org": "^0.1.2",
 -    "eslint-plugin-babel": "^4.1.2",
 -    "eslint-plugin-flowtype": "^2.50.3",
--    "eslint-plugin-jest": "^23.0.4",
 -    "eslint-plugin-react": "^7.11.1",
 -    "eslint-plugin-react-hooks": "^2.2.0",
      "extract-text-webpack-plugin": "^4.0.0-beta.0",
      "fake-indexeddb": "^3.0.0",
      "file-loader": "^5.0.2",
-@@ -138,34 +124,10 @@
+@@ -136,34 +123,10 @@
      "postcss-strip-inline-comments": "^0.1.5",
      "rimraf": "^2.4.3",
      "shell-escape": "^0.2.0",

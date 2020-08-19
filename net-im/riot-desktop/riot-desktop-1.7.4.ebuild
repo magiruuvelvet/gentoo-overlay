@@ -9,7 +9,7 @@ HOMEPAGE="https://riot.im"
 inherit unpacker xdg-utils
 
 SRC_URI="https://github.com/vector-im/${PN}/archive/v${PV}.tar.gz -> ${P}.tar.gz
-    https://github.com/vector-im/riot-web/archive/v${PV}.tar.gz -> riot-web-${PV}.tar.gz"
+    https://github.com/vector-im/element-web/archive/v${PV}.tar.gz -> riot-web-${PV}.tar.gz"
 KEYWORDS="~amd64"
 
 LICENSE="Apache-2.0"
@@ -57,31 +57,38 @@ QA_PREBUILT="
     /opt/Element/swiftshader/libGLESv2.so"
 
 PN_NEW="element-desktop"
-RIOT_WEB_S="${WORKDIR}/riot-web-${PV}"
+S="${WORKDIR}/element-desktop-${PV}"
+ELEMENT_WEB_S="${WORKDIR}/element-web-${PV}"
 
 src_prepare() {
-    # tests and linter is removed to avoid requiring node.js 12 or higher
-    # using this patch riot can be built with older unsupported node versions
-
     default
-    pushd "${RIOT_WEB_S}" >/dev/null || die
-    git apply "${FILESDIR}/1.7/web-remove-tests-and-linter.patch" || die
-    git apply "${FILESDIR}/1.7/web-custom-css.patch" || die
+
+    # apply all patches
+    pushd "${ELEMENT_WEB_S}" >/dev/null || die
+    echo "applying web patches..."
+    git apply "${FILESDIR}/${PV}/web-"* || die
+    git apply "${FILESDIR}/web-custom-css.patch" || die
+
+    popd || die
+    echo "applying desktop patches..."
+    git apply "${FILESDIR}/${PV}/desktop-"* || die
+
+    # install web dependencies
+    pushd "${ELEMENT_WEB_S}" >/dev/null || die
     yarn install || die
     cp config.sample.json config.json || die
 
+    # install desktop dependencies
     popd || die
-    git apply "${FILESDIR}/1.7/desktop-remove-tests-and-linter.patch" || die
-    git apply "${FILESDIR}/1.7/desktop-electron-update.patch" || die
     yarn install || die
 }
 
 src_compile() {
-    pushd "${RIOT_WEB_S}" >/dev/null || die
+    pushd "${ELEMENT_WEB_S}" >/dev/null || die
     yarn build || die
 
     popd || die
-    ln -sf "${RIOT_WEB_S}"/webapp ./ || die
+    ln -sf "${ELEMENT_WEB_S}"/webapp ./ || die
     yarn build:native || die
     yarn build || die
 }
