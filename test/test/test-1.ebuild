@@ -19,6 +19,9 @@ multilib_src_configure() {
     echo "$(tc-getBUILD_CXX)"
 
     echo "$(tc-getPKG_CONFIG)"
+
+    echo "$PATH"
+    echo "$LD_LIBRARY_PATH"
 }
 
 src_install() {
