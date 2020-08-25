@@ -1,0 +1,11 @@
+[Unit]
+Description=Pi-hole FTLDNS engine
+
+[Service]
+PIDFile=/var/run/pihole-FTL.pid
+ExecStart=/usr/bin/pihole-FTL no-daemon
+ExecReload=/bin/kill -USR1 $MAINPID
+Restart=on-failure
+     
+[Install]
+WantedBy=multi-user.target
