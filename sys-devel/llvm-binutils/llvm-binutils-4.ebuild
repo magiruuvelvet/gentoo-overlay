@@ -13,7 +13,7 @@ RDEPEND="
     sys-devel/llvm
 "
 
-LLVM_MAX_SLOT=9
+LLVM_MAX_SLOT=10
 
 src_unpack() {
     mkdir -p "${S}"
@@ -32,6 +32,7 @@ create_binutil_symlink() {
     LLVM_BIN_UTIL="$LLVM_PATH/bin/llvm-"
 
     ln -s "${LLVM_BIN_UTIL}${1}"    "${ED}/usr/bin/${1}"
+    ln -s "${LLVM_BIN_UTIL}${1}"    "${ED}/usr/bin/x86_64-pc-linux-${1}"
 }
 
 src_install() {
