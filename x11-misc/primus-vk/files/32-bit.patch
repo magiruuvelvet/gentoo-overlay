@@ -30,7 +30,7 @@ index 6194974..f230eea 100644
  
  #ifndef NV_DRIVER_PATH
 -#define NV_DRIVER_PATH "/usr/lib64/opengl/nvidia/lib/libGLX_nvidia.so.0"
-+#define NV_DRIVER_PATH "/usr/lib/opengl/nvidia/lib/libGLX_nvidia.so.0"
++#define NV_DRIVER_PATH "/usr/lib/libGLX_nvidia.so.0"
  #endif
  
  class StaticInitialize {
