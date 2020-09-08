@@ -9,7 +9,7 @@ inherit multilib-build git-r3
 DESCRIPTION="Faster OpenGL offloading for Bumblebee"
 HOMEPAGE="https://github.com/amonakov/primus"
 SRC_URI=""
-EGIT_REPO_URI="git://github.com/amonakov/primus.git https://github.com/amonakov/primus.git"
+EGIT_REPO_URI="https://github.com/amonakov/primus.git"
 EGIT_BRANCH="master"
 
 LICENSE="ISC"
@@ -29,7 +29,8 @@ PATCHES=(
 )
 
 src_compile() {
-	export PRIMUS_libGLa='/usr/$$LIB/opengl/nvidia/lib/libGL.so.1'
+	#export PRIMUS_libGLa='/usr/$$LIB/opengl/nvidia/lib/libGL.so.1'
+	export PRIMUS_libGLa='/usr/$$LIB/libGL.so.1'
 	mymake() {
 		emake LIBDIR=$(get_libdir)
 	}
