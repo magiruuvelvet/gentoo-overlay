@@ -8,8 +8,8 @@ KEYWORDS="*"
 IUSE=""
 
 RDEPEND="
-    x11-drivers/nvidia-drivers[libglvnd]
-    media-libs/mesa[video_cards_intel,libglvnd,egl]
+    x11-drivers/nvidia-drivers[X,libglvnd]
+    media-libs/mesa[video_cards_intel,X,libglvnd,egl]
     x11-base/xorg-server[libglvnd]
     media-libs/vulkan-loader[X,layers]
 "
