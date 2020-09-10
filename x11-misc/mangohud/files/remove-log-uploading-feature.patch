@@ -1,0 +1,104 @@
+diff --git a/src/keybinds.h b/src/keybinds.h
+index 3943f83..80a1e6c 100644
+--- a/src/keybinds.h
++++ b/src/keybinds.h
+@@ -9,7 +9,7 @@
+ typedef unsigned long KeySym;
+ #endif
+ 
+-Clock::time_point last_f2_press, last_f12_press, reload_cfg_press, last_upload_press;
++Clock::time_point last_f2_press, last_f12_press, reload_cfg_press;
+ 
+ #ifdef HAVE_X11
+ bool keys_are_pressed(const std::vector<KeySym>& keys) {
+diff --git a/src/overlay.cpp b/src/overlay.cpp
+index b36ad68..3d1eec8 100644
+--- a/src/overlay.cpp
++++ b/src/overlay.cpp
+@@ -673,8 +673,6 @@ void init_gpu_stats(uint32_t& vendorID, overlay_params& params)
+          params.enabled[OVERLAY_PARAM_ENABLED_gpu_stats] = false;
+       }
+    }
+-   if (!params.permit_upload)
+-      printf("MANGOHUD: Uploading is disabled (permit_upload = 0)\n");
+ }
+ 
+ void init_system_info(){
+@@ -800,7 +798,6 @@ void check_keybinds(struct swapchain_stats& sw_stats, struct overlay_params& par
+    auto elapsedF2 = now - last_f2_press;
+    auto elapsedF12 = now - last_f12_press;
+    auto elapsedReloadCfg = now - reload_cfg_press;
+-   auto elapsedUpload = now - last_upload_press;
+ 
+    auto keyPressDelay = 500ms;
+ 
+@@ -848,29 +845,6 @@ void check_keybinds(struct swapchain_stats& sw_stats, struct overlay_params& par
+          reload_cfg_press = now;
+       }
+    }
+-
+-   if (params.permit_upload && elapsedUpload >= keyPressDelay){
+-#ifdef HAVE_X11
+-      pressed = keys_are_pressed(params.upload_log);
+-#else
+-      pressed = false;
+-#endif
+-      if (pressed){
+-         last_upload_press = now;
+-         logger->upload_last_log();
+-      }
+-   }
+-   if (params.permit_upload && elapsedUpload >= keyPressDelay){
+-#ifdef HAVE_X11
+-      pressed = keys_are_pressed(params.upload_logs);
+-#else
+-      pressed = false;
+-#endif
+-      if (pressed){
+-         last_upload_press = now;
+-         logger->upload_last_logs();
+-      }
+-   }
+ }
+ 
+ void calculate_benchmark_data(void *params_void){
+diff --git a/src/overlay_params.cpp b/src/overlay_params.cpp
+index caef330..0a6e0e0 100644
+--- a/src/overlay_params.cpp
++++ b/src/overlay_params.cpp
+@@ -309,7 +309,6 @@ parse_font_glyph_ranges(const char *str)
+ #define parse_font_scale(s) parse_float(s)
+ #define parse_background_alpha(s) parse_float(s)
+ #define parse_alpha(s) parse_float(s)
+-#define parse_permit_upload(s) parse_unsigned(s)
+ #define parse_render_mango(s) parse_unsigned(s)
+ 
+ #define parse_cpu_color(s) parse_color(s)
+@@ -483,7 +482,6 @@ parse_overlay_config(struct overlay_params *params,
+    params->font_scale_media_player = 0.55f;
+    params->log_interval = 100;
+    params->media_player_order = { MP_ORDER_TITLE, MP_ORDER_ARTIST, MP_ORDER_ALBUM };
+-   params->permit_upload = 0;
+    params->render_mango = 0;
+    params->benchmark_percentiles = { "97", "AVG", "1", "0.1" };
+ 
+diff --git a/src/overlay_params.h b/src/overlay_params.h
+index 560465f..c2142e9 100644
+--- a/src/overlay_params.h
++++ b/src/overlay_params.h
+@@ -98,7 +98,6 @@ typedef unsigned long KeySym;
+    OVERLAY_PARAM_CUSTOM(cpu_text)                    \
+    OVERLAY_PARAM_CUSTOM(gpu_text)                    \
+    OVERLAY_PARAM_CUSTOM(log_interval)                \
+-   OVERLAY_PARAM_CUSTOM(permit_upload)               \
+    OVERLAY_PARAM_CUSTOM(render_mango)                \
+    OVERLAY_PARAM_CUSTOM(benchmark_percentiles)       \
+    OVERLAY_PARAM_CUSTOM(help)
+@@ -185,7 +184,6 @@ struct overlay_params {
+ 
+    std::string config_file_path;
+    std::unordered_map<std::string,std::string> options;
+-   int permit_upload;
+ };
+ 
+ const extern char *overlay_param_names[];

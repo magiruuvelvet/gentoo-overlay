@@ -27,6 +27,11 @@ RDEPEND="
 "
 DEPEND="${RDEPEND}"
 
+PATCHES="
+    ${FILESDIR}/disable-config-lookup-in-exe-path.patch
+    ${FILESDIR}/remove-log-uploading-feature.patch
+"
+
 multilib_src_configure() {
     local emesonargs=(
         --buildtype=release
