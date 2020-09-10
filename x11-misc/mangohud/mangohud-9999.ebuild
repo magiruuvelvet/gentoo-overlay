@@ -10,9 +10,14 @@ KEYWORDS="amd64 x86"
 
 EGIT_REPO_URI="${HOMEPAGE}"
 
+# enabling this feature on multi GPU systems is not recommended
+# as it breaks mangohud for non-NVIDIA GPUs
+IUSE="-xnvctrl"
+
 BDEPEND="
     dev-util/vulkan-headers
     virtual/pkgconfig
+    xnvctrl? ( x11-libs/libxnvctrl )
 "
 RDEPEND="
     media-libs/vulkan-loader[${MULTILIB_USEDEP}]
@@ -28,7 +33,7 @@ multilib_src_configure() {
         --prefix /usr
         -Dappend_libdir_mangohud=false
         -Duse_system_vulkan=enabled
-        -Dwith_xnvctrl=disabled
+        -Dwith_xnvctrl=$(usex xnvctrl enabled disabled)
     )
 
     meson_src_configure
