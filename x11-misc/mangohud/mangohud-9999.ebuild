@@ -17,7 +17,7 @@ IUSE="-xnvctrl"
 BDEPEND="
     dev-util/vulkan-headers
     virtual/pkgconfig
-    xnvctrl? ( x11-libs/libxnvctrl )
+    xnvctrl? ( || ( x11-libs/libxnvctrl x11-drivers/nvidia-drivers[tools] ) )
 "
 RDEPEND="
     media-libs/vulkan-loader[${MULTILIB_USEDEP}]
