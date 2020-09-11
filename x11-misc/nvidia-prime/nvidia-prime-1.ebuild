@@ -26,6 +26,7 @@ S="${WORKDIR}"
 src_install() {
     mkdir -p "${ED}/usr/bin"
     cp "${FILESDIR}/primerun" "${ED}/usr/bin/"
+    cp "${FILESDIR}/primerun-revert" "${ED}/usr/bin/"
     ln -s primerun "${ED}/usr/bin/primusrun"
     ln -s primerun "${ED}/usr/bin/optirun"
 

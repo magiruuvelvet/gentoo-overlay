@@ -1,0 +1,7 @@
+#!/bin/sh
+unset __NV_PRIME_RENDER_OFFLOAD
+unset __GLX_VENDOR_LIBRARY_NAME
+unset __VK_LAYER_NV_optimus
+export __EGL_VENDOR_LIBRARY_FILENAMES=/usr/share/glvnd/egl_vendor.d/50_mesa.json
+export VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/intel_icd.x86_64.json:/usr/share/vulkan/icd.d/intel_icd.i686.json
+exec "$@"
