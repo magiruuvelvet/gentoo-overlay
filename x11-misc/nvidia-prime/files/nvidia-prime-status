@@ -16,10 +16,12 @@ RES_CUDA=$?
 if [[ "$RES_OFFLOAD" == 0 || "$RES_CUDA" == 0 ]]; then
     # NVIDIA GPU is currently in use
     echo 1
+    exit 1
 else
     # NVIDIA GPU is currently not used
     echo 0
+    exit 0
 fi
 
-# ensure the exit status is always zero
+# this should never happen
 exit 0
