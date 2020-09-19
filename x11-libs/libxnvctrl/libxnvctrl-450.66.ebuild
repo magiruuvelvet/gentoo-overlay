@@ -14,7 +14,6 @@ RDEPEND="
 "
 DEPEND="
     ${RDEPEND}
-    !x11-drivers/nvidia-drivers[tools]
 "
 
 S="${WORKDIR}/nvidia-settings-${PV}/src/libXNVCtrl"
