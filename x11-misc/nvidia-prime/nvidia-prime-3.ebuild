@@ -8,9 +8,9 @@ KEYWORDS="*"
 IUSE="+compat +udev"
 
 RDEPEND="
-    x11-drivers/nvidia-drivers[X,libglvnd]
-    media-libs/mesa[video_cards_intel,X,libglvnd,egl]
-    x11-base/xorg-server[libglvnd]
+    x11-drivers/nvidia-drivers[X]
+    media-libs/mesa[video_cards_intel,X,egl]
+    x11-base/xorg-server
     media-libs/vulkan-loader[X,layers]
 "
 DEPEND="
