@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+    <maintainer type="project">
+    </maintainer>
+    <use>
+        <flag name="sudo">Use app-admin/sudo for running privileged commands (default and officially supported by pihole, no manual setup required)</flag>
+        <flag name="doas">Use app-admin/doas for running privileged commands (requires manual setup to run commands without password for the web interface user)</flag>
+    </use>
+</pkgmetadata>

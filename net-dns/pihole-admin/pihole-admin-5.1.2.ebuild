@@ -13,13 +13,16 @@ SRC_URI="
 
 SLOT="0"
 KEYWORDS="*"
-IUSE=""
+IUSE="sudo doas"
 
 RDEPEND="
     >=net-dns/pihole-${PV}
     app-shells/bash
-    app-admin/sudo
+    sudo? ( app-admin/sudo )
+    doas? ( app-admin/doas )
 "
+
+REQUIRED_USE="^^ ( sudo doas )"
 
 src_unpack() {
     unpack ${A}
@@ -33,6 +36,10 @@ src_prepare() {
     # fix wrong or generic paths
     patch -s -p0 < "${FILESDIR}/5.x/arch-server-admin-5.1.1.patch"
     patch -s -p0 < "${FILESDIR}/5.x/arch-server-core-5.1.2.patch"
+
+    if use doas; then
+        patch -p1 < "${FILESDIR}/5.x/use-doas-instead-of-sudo.patch"
+    fi
 
     # note: don't call "default" here as non-standard paths are used
 
@@ -68,9 +75,11 @@ src_install() {
 
     cp -dpr --no-preserve=ownership advanced/Scripts/database_migration "${D}"/opt/pihole/
 
-    # install required sudoers rule
-    install -dm750 "${D}"/etc/sudoers.d
-    install -Dm440 advanced/Templates/pihole.sudo "${D}"/etc/sudoers.d/pihole
+    if use sudo; then
+        # install required sudoers rule
+        install -dm750 "${D}"/etc/sudoers.d
+        install -Dm440 advanced/Templates/pihole.sudo "${D}"/etc/sudoers.d/pihole
+    fi
 
     # install tmpfiles
     install -Dm644 "${FILESDIR}/5.x/pi-hole.tmpfile" "${D}"/usr/lib/tmpfiles.d/pi-hole.conf
