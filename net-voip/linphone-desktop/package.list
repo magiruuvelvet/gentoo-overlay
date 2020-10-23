@@ -1,0 +1,21 @@
+# these packages belong to the linphone application and are maintained by the same team
+# the remaining dependencies can be found in the "nest" overlay
+net-voip/linphone-desktop
+dev-libs/liblinphone
+dev-libs/belcard
+dev-libs/belle-sip
+dev-libs/lime
+media-libs/mediastreamer2
+net-libs/bctoolbox
+net-libs/bzrtp
+net-libs/ortp
+dev-cpp/belr
+
+# remaining depedencies
+dev-cpp/xsd::nest
+dev-cpp/libxsd-frontend::nest
+dev-cpp/libcutl::nest
+dev-db/soci::nest
+dev-util/cli::nest
+dev-libs/xerces-c::nest
+dev-python/pystache::nest
