@@ -66,12 +66,12 @@ src_prepare() {
     # apply all patches
     pushd "${ELEMENT_WEB_S}" >/dev/null || die
     echo "applying web patches..."
-    git apply "${FILESDIR}/${PV}/web-"* || die
+    git apply "${FILESDIR}/${PV}/web-"* || true
     git apply "${FILESDIR}/web-custom-css.patch" || die
 
     popd || die
     echo "applying desktop patches..."
-    git apply "${FILESDIR}/${PV}/desktop-"* || die
+    git apply "${FILESDIR}/${PV}/desktop-"* || true
 
     # install web dependencies
     pushd "${ELEMENT_WEB_S}" >/dev/null || die
