@@ -14,7 +14,7 @@ SRC_URI="https://github.com/BelledonneCommunications/${PN}/archive/${PV}.tar.gz 
 LICENSE="GPL-3"
 KEYWORDS="~amd64 ~x86"
 SLOT="0"
-IUSE="debug doc ldap libnotify static-libs test tools"
+IUSE="debug doc ldap libnotify -video static-libs test tools"
 REQUIRED_USE="${PYTHON_REQUIRED_USE}"
 RESTRICT="!test? ( test )"
 
@@ -56,6 +56,7 @@ src_configure() {
 		-DENABLE_STATIC="$(usex static-libs)"
 		-DENABLE_TOOLS="$(usex tools)"
 		-DENABLE_UNIT_TESTS="$(usex test)"
+		-DENABLE_VIDEO="$(usex video)"
 	)
 
 	cmake_src_configure
