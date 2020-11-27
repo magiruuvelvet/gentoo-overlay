@@ -1,0 +1,39 @@
+diff --git a/cmake/BcToolboxCMakeUtils.cmake b/cmake/BcToolboxCMakeUtils.cmake
+index fd4894e..b47dd5c 100644
+--- a/cmake/BcToolboxCMakeUtils.cmake
++++ b/cmake/BcToolboxCMakeUtils.cmake
+@@ -157,13 +157,9 @@ function(bc_compute_lib_version OUTPUT_VERSION default_version)
+ 			WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+ 		)
+ 
+-		# parse git describe version
+-		if (NOT (GIT_DESCRIBE_VERSION MATCHES "^([0-9]+)[.]([0-9]+)[.]([0-9]+)(-alpha|-beta)?(-[0-9]+)?(-g[0-9a-f]+)?$"))
+-			message(FATAL_ERROR "invalid git describe version: '${GIT_DESCRIBE_VERSION}'")
+-			endif()
+-		set(version_major ${CMAKE_MATCH_1})
+-		set(version_minor ${CMAKE_MATCH_2})
+-		set(version_patch ${CMAKE_MATCH_3})
++		set(version_major "4")
++		set(version_minor "4")
++		set(version_patch "13")
+ 
+ 		# format lib version
+ 		set(${OUTPUT_VERSION} "${version_major}.${version_minor}.${version_patch}" CACHE STRING "")
+@@ -183,13 +179,10 @@ function(bc_compute_full_version OUTPUT_VERSION)
+ 			WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+ 		)
+ 
+-		# parse git describe version
+-		if (NOT (GIT_DESCRIBE_VERSION MATCHES "^([0-9]+)[.]([0-9]+)[.]([0-9]+)(-alpha|-beta)?(-[0-9]+)?(-g[0-9a-f]+)?$"))
+-			message(FATAL_ERROR "invalid git describe version: '${GIT_DESCRIBE_VERSION}'")
+-		endif()
+-		set(version_major ${CMAKE_MATCH_1})
+-		set(version_minor ${CMAKE_MATCH_2})
+-		set(version_patch ${CMAKE_MATCH_3})
++		set(version_major "4")
++		set(version_minor "4")
++		set(version_patch "13")
++
+ 		if (CMAKE_MATCH_4)
+ 			string(SUBSTRING "${CMAKE_MATCH_4}" 1 -1 version_prerelease)
+ 		endif()
