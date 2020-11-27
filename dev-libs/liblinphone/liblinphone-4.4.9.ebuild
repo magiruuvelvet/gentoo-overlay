@@ -10,6 +10,7 @@ inherit cmake python-r1
 DESCRIPTION="SIP library supporting voice/video calls and text messaging"
 HOMEPAGE="https://gitlab.linphone.org/BC/public/liblinphone"
 SRC_URI="https://github.com/BelledonneCommunications/${PN}/archive/${PV}.tar.gz -> ${P}.tar.gz"
+ROOT_CA_DL_URL="https://gitlab.linphone.org/BC/public/liblinphone/raw/master/share/rootca.pem"
 
 LICENSE="GPL-3"
 KEYWORDS="~amd64 ~x86"
@@ -44,6 +45,27 @@ BDEPEND="${PYTHON_DEPS}
 	dev-python/six[${PYTHON_USEDEP}]
 	dev-vcs/git
 	doc? ( dev-python/sphinx[${PYTHON_USEDEP}] )"
+
+pkg_pretend() {
+    if has network-sandbox ${FEATURES} && [[ "${MERGE_TYPE}" != binary ]]; then
+        ewarn
+        ewarn "${CATEGORY}/${PN} requires 'network-sandbox' to be disabled in FEATURES to download the latest root CA from the source repository"
+        ewarn
+    fi
+}
+
+src_prepare() {
+    if ! has network-sandbox ${FEATURES}; then
+        wget "${ROOT_CA_DL_URL}" -O "${S}/share/rootca.pem"
+    else
+        ewarn
+        ewarn "Not downloading latest root CA from source repository because 'network-sandbox' is enabled"
+        ewarn
+    fi
+
+    default
+    cmake_src_prepare
+}
 
 src_configure() {
 	local mycmakeargs=(
