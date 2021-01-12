@@ -19,6 +19,10 @@ RDEPEND="ssl? ( net-libs/mbedtls )"
 DEPEND="${RDEPEND}"
 BDEPEND="test? ( dev-util/bcunit )"
 
+PATCHES="
+    ${FILESDIR}/${PV}-remove-broken-cmake-git-check.patch
+"
+
 src_prepare() {
 	sed -i 's/CU_automated_enable_partial_junit/CU_automated_enable_junit_xml/' \
 		src/tester.c || die "sed failed for src/tester.c"
