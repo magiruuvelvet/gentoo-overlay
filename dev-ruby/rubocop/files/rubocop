@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+
+require 'rubocop'
+
+cli = RuboCop::CLI.new
+result = cli.run
+exit result

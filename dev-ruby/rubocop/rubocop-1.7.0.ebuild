@@ -6,6 +6,12 @@ USE_RUBY="ruby25 ruby26 ruby27"
 
 RUBY_FAKEGEM_RECIPE_TEST="rspec3"
 
+# binaries are not installing for some reason, but to make sure the below workaround
+# doesn't break on a ruby-fakegem update, ensure no wrappers are installed
+# also the official wrapper requires benchmark, which isn't required for anything else
+# so my wrapper is more "lightweight"
+RUBY_FAKEGEM_BINWRAP=""
+
 RUBY_FAKEGEM_RECIPE_DOC="none"
 RUBY_FAKEGEM_EXTRADOC="README.md"
 
@@ -30,3 +36,14 @@ ruby_add_rdepend "
 	<dev-ruby/parser-3.0
 	=dev-ruby/rubocop-ast-1.4.0
 "
+
+all_ruby_install() {
+    all_fakegem_install
+
+    # WORKAROUND:
+    # install missing rubocop command line interface
+    # for some reason the Portage gem handler isn't picking it up
+    # it works when doing "gem install rubocop"
+    exeinto /usr/bin
+    doexe "${FILESDIR}/rubocop"
+}
