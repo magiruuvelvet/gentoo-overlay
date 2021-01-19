@@ -18,7 +18,7 @@ IUSE="libav"
 RDEPEND="
 	libav? ( media-video/libav:= )
 	!libav? ( media-video/ffmpeg:0= )
-	x11-libs/wxGTK:${WX_GTK_VER}[X]
+	x11-libs/wxGTK[X]
 "
 DEPEND="${RDEPEND}
 	dev-util/intltool
@@ -27,6 +27,5 @@ DEPEND="${RDEPEND}
 "
 
 src_prepare() {
-	need-wxwidgets unicode
 	eautoreconf
 }
