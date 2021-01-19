@@ -8,12 +8,11 @@ EGIT_REPO_URI="https://gitlab.com/vala-panel-project/vala-panel-appmenu"
 
 SLOT="0"
 KEYWORDS="~amd64"
-IUSE="gtk3 gtk2"
 
 S="${WORKDIR}/${P}/subprojects/appmenu-gtk-module"
 
 DEPEND="
-    x11-libs/gtk+
+    x11-libs/gtk+:3
 "
 
 PATCHES="
@@ -26,6 +25,7 @@ src_configure() {
         -DCMAKE_INSTALL_LIBDIR=lib64
         -DCMAKE_INSTALL_LIBEXECDIR=lib
         -DGSETTINGS_LOCALINSTALL=OFF
+        -Dgtk=3
     )
 
     meson_src_configure
