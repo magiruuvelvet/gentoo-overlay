@@ -45,8 +45,6 @@ ruby_add_bdepend "
 each_ruby_install() {
     each_fakegem_install
 
-    # ensure the yardoc directory exists within the gem path
-    # otherwise solargraph terminates with an error that no yardoc was found
-    # just slamming the README in there makes solargraph work
-    ruby_fakegem_newins README.md yardoc/README.md
+    # install required assets
+    ruby_fakegem_newins yardoc/2.2.2.tar.gz yardoc/2.2.2.tar.gz
 }
