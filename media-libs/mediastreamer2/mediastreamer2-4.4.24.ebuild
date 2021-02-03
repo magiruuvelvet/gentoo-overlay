@@ -23,7 +23,7 @@ RDEPEND="net-libs/bctoolbox[test?]
 	net-libs/ortp
 	alsa? ( media-libs/alsa-lib )
 	bv16? ( media-libs/bv16-floatingpoint )
-	ffmpeg? ( virtual/ffmpeg )
+	ffmpeg? ( media-video/ffmpeg )
 	g726? ( media-libs/spandsp )
 	g729? ( media-libs/bcg729 )
 	gsm? ( media-sound/gsm )
