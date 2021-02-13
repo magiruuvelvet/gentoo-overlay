@@ -58,7 +58,8 @@ src_configure() {
         -DCUTTER_ENABLE_PYTHON=OFF
         -DCUTTER_USE_BUNDLED_RIZIN=OFF
         -DCUTTER_ENABLE_CRASH_REPORTS=OFF
-        
+        -DCUTTER_ENABLE_GRAPHVIZ=ON
+        -DCUTTER_EXTRA_PLUGIN_DIRS="/usr/share/RizinOrg/Cutter/plugins:/usr/share/rizin/plugins"
     )
 
     cmake_src_configure
