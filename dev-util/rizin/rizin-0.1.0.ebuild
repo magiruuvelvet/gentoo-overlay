@@ -37,6 +37,7 @@ src_configure() {
         -Duse_sys_libzip=true
         -Duse_sys_lz4=true
         -Duse_sys_xxhash=true
+        -Drizin_plugins="/usr/share/rizin/plugins"
     )
 
     meson_src_configure
