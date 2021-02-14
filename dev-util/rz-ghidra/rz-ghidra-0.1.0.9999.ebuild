@@ -45,3 +45,13 @@ src_configure() {
 
     cmake_src_configure
 }
+
+pkg_postinst() {
+    elog "If the plugin doesn't work or segfaults, try to symlink all files and folders found in"
+    elog "'/usr/share/rizin/plugins/' into your home '~/.local/share/rizin/plugins/'."
+    elog "The plugin has a bug where it can't find its own configuration for some reason."
+    elog "    analysis_ghidra.so -> /usr/share/rizin/plugins/analysis_ghidra.so"
+    elog "    asm_ghidra.so -> /usr/share/rizin/plugins/asm_ghidra.so"
+    elog "    core_ghidra.so -> /usr/share/rizin/plugins/core_ghidra.so"
+    elog "    rz_ghidra_sleigh -> /usr/share/rizin/plugins/rz_ghidra_sleigh"
+}
