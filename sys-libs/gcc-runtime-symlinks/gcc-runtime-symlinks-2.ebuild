@@ -12,7 +12,7 @@ src_unpack() {
 }
 
 src_install() {
-    GCC_INSTALL_PREFIX=/opt/gnu
+    GCC_INSTALL_PREFIX=/sucks/gnu
     GCC_32="$GCC_INSTALL_PREFIX/lib"
     GCC_64="$GCC_INSTALL_PREFIX/lib64"
 

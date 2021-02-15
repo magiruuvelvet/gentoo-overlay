@@ -9,10 +9,11 @@ ld="$(basename "$0")"
 ld="${ld::-1}"
 args=()
 
-GCC_CRTBEGIN_x86_64="/opt/gnu/lib/gcc/x86_64-pc-linux/9.2.0/crtbeginS.o"
-GCC_CRTBEGIN_i386="/opt/gnu/lib/gcc/x86_64-pc-linux/9.2.0/32/crtbeginS.o"
-GCC_CRTEND_x86_64="/opt/gnu/lib/gcc/x86_64-pc-linux/9.2.0/crtendS.o"
-GCC_CRTEND_i386="/opt/gnu/lib/gcc/x86_64-pc-linux/9.2.0/32/crtendS.o"
+GCC_VERSION="10.2.0"
+GCC_CRTBEGIN_x86_64="/sucks/gnu/lib/gcc/x86_64-pc-linux/$GCC_VERSION/crtbeginS.o"
+GCC_CRTBEGIN_i386="/sucks/gnu/lib/gcc/x86_64-pc-linux/$GCC_VERSION/32/crtbeginS.o"
+GCC_CRTEND_x86_64="/sucks/gnu/lib/gcc/x86_64-pc-linux/$GCC_VERSION/crtendS.o"
+GCC_CRTEND_i386="/sucks/gnu/lib/gcc/x86_64-pc-linux/$GCC_VERSION/32/crtendS.o"
 
 for x in "$@"; do
     if [[ "$x" == *"clang_rt.crtbegin-x86_64.o"* ]]; then
@@ -31,4 +32,4 @@ done
 echo "Invoking linker with correct crt files..."
 echo ">>" "$ld" "${args[@]}"
 
-exec "/opt/gnu/bin/$ld" "${args[@]}"
+exec "/sucks/gnu/bin/$ld" "${args[@]}"

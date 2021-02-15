@@ -1,2 +1,2 @@
 #!/bin/sh
-exec /opt/gnu/bin/as "$@"
+exec /sucks/gnu/bin/as "$@"

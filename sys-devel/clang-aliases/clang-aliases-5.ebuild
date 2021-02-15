@@ -29,5 +29,5 @@ src_install() {
     ln -s "$LLVM_PATH/bin/clang++"      "${ED}/usr/bin/c++"
 
     # assembler
-    ln -s "/opt/gnu/bin/as"             "${ED}/usr/bin/as"
+    ln -s "/sucks/gnu/bin/as"             "${ED}/usr/bin/as"
 }

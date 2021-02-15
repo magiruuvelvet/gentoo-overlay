@@ -12,7 +12,7 @@ src_unpack() {
 }
 
 src_install() {
-    TARGET=/opt/gnu/compat
+    TARGET=/sucks/gnu/compat
     insinto $TARGET
 
     install -m755 "${FILESDIR}/ld.sh" "${ED}$TARGET/ld.bfd"
