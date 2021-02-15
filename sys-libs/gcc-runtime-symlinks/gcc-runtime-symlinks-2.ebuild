@@ -33,3 +33,11 @@ src_install() {
         ln -s "$GCC_64/$lib" "${ED}/usr/lib64/$lib"
     done
 }
+
+pkg_postinst() {
+    elog "This package is obsolete. Please use the portage-hook-ctrl to fix individual"
+    elog "packages which depend on the GCC runtime libraries on a case-by-case basis."
+    elog "If the package is open-source, use static-gnu-runtime.conf to link the libraries"
+    elog "statically. Otherwise make a LD_LIBRARY_PATH wrapper scripts or if the application"
+    elog "already reads libraries from a specific location, make symlinks inside there."
+}
