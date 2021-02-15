@@ -9,13 +9,12 @@ DESCRIPTION="Video conferencing and web conferencing service"
 HOMEPAGE="https://zoom.us"
 
 SRC_URI="
-	amd64? ( https://zoom.us/client/${PV}/${PN}_amd64.deb -> ${P}_amd64.deb  )
-	x86? ( https://zoom.us/client/${PV}/${PN}_i386.deb -> ${P}_x86.deb  )
+	https://zoom.us/client/${PV}/${PN}_amd64.deb -> ${P}_amd64.deb
 "
 
 LICENSE="ZOOM"
 SLOT="0"
-KEYWORDS="~amd64 ~x86"
+KEYWORDS="~amd64"
 RESTRICT="mirror preserve-libs split"
 IUSE="alsa pax_kernel pulseaudio"
 
