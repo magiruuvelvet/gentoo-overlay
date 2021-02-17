@@ -20,6 +20,7 @@
 		<flag name="clang">Build clang-based plugins (code model, formatting, static analysis)</flag>
 		<flag name="clearcase">Add support for IBM ClearCase version control system (requires manual installation of ClearCase client)</flag>
 		<flag name="cmake">Build plugin for CMake-based projects</flag>
+        <flag name="meson">Build plugin for meson-based projects</flag>
 		<flag name="cppcheck">Enable integration with <pkg>dev-util/cppcheck</pkg></flag>
 		<flag name="ctfvisualizer">Build the Chrome Trace Format visualizer plugin</flag>
 		<flag name="designer">Enable designer for QtWidgets-based UIs</flag>
@@ -48,6 +49,9 @@
 		<flag name="webassembly">Build WebAssembly plugin</flag>
 		<flag name="webengine">Use <pkg>dev-qt/qtwebengine</pkg> to view documentation</flag>
 		<flag name="winrt">Build plugin for WinRT devices</flag>
+        <flag name="vcsbase">Version Control System base</flag>
+        <flag name="todo">TODO Plugin</flag>
+        <flag name="tasklist">Tasklist Plugin</flag>
 	</use>
 	<upstream>
 		<bugs-to>https://bugreports.qt.io/</bugs-to>
