@@ -1,0 +1,2 @@
+OUTPUT_FORMAT(elf32-i386)
+GROUP ( /usr/lib/libc.a AS_NEEDED ( /sucks/gnu/lib/gcc/x86_64-pc-linux/10.2.0/32/libgcc.a ) )
