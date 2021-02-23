@@ -19,6 +19,10 @@ RDEPEND="sys-devel/llvm sys-libs/llvm-libunwind"
 BDEPEND="dev-lang/ldc2"
 DEPEND="${RDEPEND}"
 
+PATCHES="
+    ${FILESDIR}/llvm-runtime-patches.patch
+"
+
 src_configure() {
     local mycmakeargs=(
         -DD_VERSION=2
