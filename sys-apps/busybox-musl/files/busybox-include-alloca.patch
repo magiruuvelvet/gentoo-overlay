@@ -1,0 +1,38 @@
+diff --git a/scripts/basic/docproc.c b/scripts/basic/docproc.c
+index 720098a..6d5e2fd 100644
+--- a/scripts/basic/docproc.c
++++ b/scripts/basic/docproc.c
+@@ -39,7 +39,7 @@
+ #include <limits.h>
+ #include <sys/types.h>
+ #include <sys/wait.h>
+-//bbox disabled: #include <alloca.h>
++#include <alloca.h>
+ 
+ /* exitstatus is used to keep track of any failing calls to kernel-doc,
+  * but execution continues. */
+diff --git a/scripts/basic/fixdep.c b/scripts/basic/fixdep.c
+index 19f82df..165a8c3 100644
+--- a/scripts/basic/fixdep.c
++++ b/scripts/basic/fixdep.c
+@@ -113,7 +113,7 @@
+ #include <limits.h>
+ #include <ctype.h>
+ #include <arpa/inet.h>
+-//bbox disabled: #include <alloca.h>
++#include <alloca.h>
+ 
+ /* bbox: not needed
+ #define INT_CONF ntohl(0x434f4e46)
+diff --git a/scripts/kconfig/lex.zconf.c_shipped b/scripts/kconfig/lex.zconf.c_shipped
+index 51f15e1..01d7005 100644
+--- a/scripts/kconfig/lex.zconf.c_shipped
++++ b/scripts/kconfig/lex.zconf.c_shipped
+@@ -20,6 +20,7 @@
+ #include <string.h>
+ #include <errno.h>
+ #include <stdlib.h>
++#include <alloca.h>
+ 
+ /* end standard C headers. */
+ 
