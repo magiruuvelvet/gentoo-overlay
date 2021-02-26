@@ -13,9 +13,8 @@ SLOT="0"
 IUSE=""
 
 RDEPEND="dev-util/cmake"
-DEPEND="${RDEPEND}
-    app-text/dos2unix
-"
+DEPEND="${RDEPEND}"
+BDEPEND="app-text/dos2unix"
 
 S="${WORKDIR}/${PN}-master/cmake-d"
 
