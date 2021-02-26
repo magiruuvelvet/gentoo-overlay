@@ -26,6 +26,11 @@ CMAKE_MIN_VERSION="2.8.7"
 
 S="${WORKDIR}/${PN}-version_${PV}"
 
+PATCHES="
+    ${FILESDIR}/disable-assertion-check.patch
+    ${FILESDIR}/fix-link-92.patch
+"
+
 src_prepare() {
     sed -r -i \
         -e '/INSTALL.+src\/binaryen-c\.h/d' \
@@ -38,6 +43,8 @@ src_configure() {
     local mycmakeargs=(
         -DBUILD_STATIC_LIB=OFF
         -DENABLE_WERROR=OFF
+        -DBYN_ASSERTIONS_ENABLED=ON
+        -DLLVM_ENABLE_DUMP=ON
     )
 
     cmake-utils_src_configure
