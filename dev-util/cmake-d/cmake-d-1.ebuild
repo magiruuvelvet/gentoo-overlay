@@ -13,7 +13,9 @@ SLOT="0"
 IUSE=""
 
 RDEPEND="dev-util/cmake"
-DEPEND="${RDEPEND}"
+DEPEND="${RDEPEND}
+    app-text/dos2unix
+"
 
 S="${WORKDIR}/${PN}-master/cmake-d"
 
@@ -21,3 +23,10 @@ PATCHES="
     ${FILESDIR}/fix-use-of-generic-name.patch
     ${FILESDIR}/dont-use-o3-for-release.patch
 "
+
+src_prepare() {
+    elog "converting line endings..."
+    find "${S}" -type f -exec dos2unix {} \;
+
+    cmake-utils_src_prepare
+}
