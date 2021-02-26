@@ -19,4 +19,5 @@ S="${WORKDIR}/${PN}-master/cmake-d"
 
 PATCHES="
     ${FILESDIR}/fix-use-of-generic-name.patch
+    ${FILESDIR}/dont-use-o3-for-release.patch
 "
