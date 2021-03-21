@@ -12,7 +12,7 @@ index 125fcd61..beeb036a 100644
  
  cl::opt<std::string>
 diff --git a/driver/linker-gcc.cpp b/driver/linker-gcc.cpp
-index f597d6d2..0b12f754 100644
+index f597d6d2..573990e8 100644
 --- a/driver/linker-gcc.cpp
 +++ b/driver/linker-gcc.cpp
 @@ -208,7 +208,7 @@ bool ArgsBuilder::isLldDefaultLinker() {
@@ -40,17 +40,17 @@ index f597d6d2..0b12f754 100644
      }
    }
  
-@@ -659,9 +659,7 @@ void ArgsBuilder::addDefaultPlatformLibs() {
+@@ -659,8 +659,8 @@ void ArgsBuilder::addDefaultPlatformLibs() {
        args.push_back("-lm");
        break;
      }
 -    if (triple.isMusl() && !global.params.betterC) {
 -      args.push_back("-lunwind"); // for druntime backtrace
--    }
-+    args.push_back("-lunwind"); // for druntime backtrace
++    if (!global.params.betterC) {
++        args.push_back("-lunwind"); // for druntime backtrace
+     }
      args.push_back("-lrt");
      args.push_back("-ldl");
-   // fallthrough
 diff --git a/driver/main.cpp b/driver/main.cpp
 index abec31c3..c66a7336 100644
 --- a/driver/main.cpp
