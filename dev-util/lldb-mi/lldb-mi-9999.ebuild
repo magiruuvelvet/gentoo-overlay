@@ -14,3 +14,11 @@ RDEPEND="
     dev-util/lldb
 "
 DEPEND="${RDEPEND}"
+
+src_configure() {
+    local mycmakeargs=(
+        -DCMAKE_INSTALL_PREFIX="/opt/lldb"
+    )
+
+    cmake_src_configure
+}
