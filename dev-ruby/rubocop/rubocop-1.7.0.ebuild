@@ -31,11 +31,21 @@ ruby_add_rdepend "
 	dev-ruby/rexml
 	dev-ruby/regexp_parser
 	dev-ruby/ruby-progressbar
-	dev-ruby/unicode-display_width
+	>=dev-ruby/unicode-display_width-1.7.0
+	<dev-ruby/unicode-display_width-2.0
 	>=dev-ruby/parser-2.7
 	<dev-ruby/parser-3.0
 	=dev-ruby/rubocop-ast-1.4.0
 "
+
+each_ruby_install() {
+    each_fakegem_install
+
+    ruby_fakegem_newins config/default.yml config/default.yml
+    ruby_fakegem_newins config/obsoletion.yml config/obsoletion.yml
+
+    ruby_fakegem_newins "${FILESDIR}/rubocop" exe/rubocop
+}
 
 all_ruby_install() {
     all_fakegem_install
