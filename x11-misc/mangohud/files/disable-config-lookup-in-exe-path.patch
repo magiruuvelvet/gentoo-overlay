@@ -1,8 +1,8 @@
 diff --git a/src/config.cpp b/src/config.cpp
-index a78738d..fc1c8dd 100644
+index ebfc2ff..01d215d 100644
 --- a/src/config.cpp
 +++ b/src/config.cpp
-@@ -32,34 +32,11 @@ void enumerate_config_files(std::vector<std::string>& paths)
+@@ -34,36 +34,11 @@ void enumerate_config_files(std::vector<std::string>& paths)
  {
      static const char *mangohud_dir = "/MangoHud/";
  
@@ -11,7 +11,9 @@ index a78738d..fc1c8dd 100644
  
      if (!env_config.empty())
          paths.push_back(env_config + mangohud_dir + "MangoHud.conf");
- 
+-#ifdef _WIN32
+-    paths.push_back("C:\\MangoHud.conf");
+-#endif
 -    std::string exe_path = get_exe_path();
 -    auto n = exe_path.find_last_of('/');
 -    if (!exe_path.empty() && n != std::string::npos && n < exe_path.size() - 1) {
@@ -20,7 +22,7 @@ index a78738d..fc1c8dd 100644
 -        program_name = basename;
 -        if (!env_config.empty())
 -            paths.push_back(env_config + mangohud_dir + basename + ".conf");
--
+ 
 -        // in executable's folder though not much sense in /usr/bin/
 -        paths.push_back(exe_path.substr(0, n) + "/MangoHud.conf");
 -

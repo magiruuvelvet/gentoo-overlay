@@ -1,44 +1,22 @@
-diff --git a/src/keybinds.h b/src/keybinds.h
-index 3943f83..80a1e6c 100644
---- a/src/keybinds.h
-+++ b/src/keybinds.h
-@@ -9,7 +9,7 @@
- typedef unsigned long KeySym;
- #endif
- 
--Clock::time_point last_f2_press, last_f12_press, reload_cfg_press, last_upload_press;
-+Clock::time_point last_f2_press, last_f12_press, reload_cfg_press;
- 
- #ifdef HAVE_X11
- bool keys_are_pressed(const std::vector<KeySym>& keys) {
-diff --git a/src/overlay.cpp b/src/overlay.cpp
-index b36ad68..3d1eec8 100644
---- a/src/overlay.cpp
-+++ b/src/overlay.cpp
-@@ -673,8 +673,6 @@ void init_gpu_stats(uint32_t& vendorID, overlay_params& params)
-          params.enabled[OVERLAY_PARAM_ENABLED_gpu_stats] = false;
-       }
-    }
--   if (!params.permit_upload)
--      printf("MANGOHUD: Uploading is disabled (permit_upload = 0)\n");
- }
- 
- void init_system_info(){
-@@ -800,7 +798,6 @@ void check_keybinds(struct swapchain_stats& sw_stats, struct overlay_params& par
-    auto elapsedF2 = now - last_f2_press;
+diff --git a/src/keybinds.cpp b/src/keybinds.cpp
+index 48b7bab..fe9f060 100644
+--- a/src/keybinds.cpp
++++ b/src/keybinds.cpp
+@@ -11,7 +11,6 @@ void check_keybinds(struct swapchain_stats& sw_stats, struct overlay_params& par
+    auto elapsedFpsLimitToggle = now - toggle_fps_limit_press;
     auto elapsedF12 = now - last_f12_press;
     auto elapsedReloadCfg = now - reload_cfg_press;
 -   auto elapsedUpload = now - last_upload_press;
  
     auto keyPressDelay = 500ms;
  
-@@ -848,29 +845,6 @@ void check_keybinds(struct swapchain_stats& sw_stats, struct overlay_params& par
+@@ -83,27 +82,4 @@ void check_keybinds(struct swapchain_stats& sw_stats, struct overlay_params& par
           reload_cfg_press = now;
        }
     }
 -
 -   if (params.permit_upload && elapsedUpload >= keyPressDelay){
--#ifdef HAVE_X11
+-#if defined(HAVE_X11) || defined(_WIN32)
 -      pressed = keys_are_pressed(params.upload_log);
 -#else
 -      pressed = false;
@@ -49,7 +27,7 @@ index b36ad68..3d1eec8 100644
 -      }
 -   }
 -   if (params.permit_upload && elapsedUpload >= keyPressDelay){
--#ifdef HAVE_X11
+-#if defined(HAVE_X11) || defined(_WIN32)
 -      pressed = keys_are_pressed(params.upload_logs);
 -#else
 -      pressed = false;
@@ -60,45 +38,173 @@ index b36ad68..3d1eec8 100644
 -      }
 -   }
  }
+diff --git a/src/keybinds.h b/src/keybinds.h
+index 3aee726..f5f3399 100644
+--- a/src/keybinds.h
++++ b/src/keybinds.h
+@@ -11,7 +11,7 @@
+ typedef unsigned long KeySym;
+ #endif
  
- void calculate_benchmark_data(void *params_void){
+-Clock::time_point last_f2_press, toggle_fps_limit_press , last_f12_press, reload_cfg_press, last_upload_press;
++Clock::time_point last_f2_press, toggle_fps_limit_press , last_f12_press, reload_cfg_press;
+ 
+ #ifdef HAVE_X11
+ bool keys_are_pressed(const std::vector<KeySym>& keys) {
+diff --git a/src/logging.cpp b/src/logging.cpp
+index f2c4271..7575b93 100644
+--- a/src/logging.cpp
++++ b/src/logging.cpp
+@@ -34,25 +34,6 @@ string exec(string command) {
+    return result;
+ }
+ 
+-void upload_file(std::string logFile){
+-  std::string command = "curl --include --request POST https://flightlessmango.com/logs -F 'log[game_id]=26506' -F 'log[user_id]=176' -F 'attachment=true' -A 'mangohud' ";
+-  command += " -F 'log[uploads][]=@" + logFile + "'";
+-
+-  command += " | grep Location | cut -c11-";
+-  std::string url = exec(command);
+-  exec("xdg-open " + url);
+-}
+-
+-void upload_files(const std::vector<std::string>& logFiles){
+-  std::string command = "curl --include --request POST https://flightlessmango.com/logs -F 'log[game_id]=26506' -F 'log[user_id]=176' -F 'attachment=true' -A 'mangohud' ";
+-  for (auto& file : logFiles)
+-    command += " -F 'log[uploads][]=@" + file + "'";
+-
+-  command += " | grep Location | cut -c11-";
+-  std::string url = exec(command);
+-  exec("xdg-open " + url);
+-}
+-
+ void writeFile(string filename){
+   auto& logArray = logger->get_log_data();
+ #ifndef NDEBUG
+@@ -157,16 +138,6 @@ void Logger::notify_data_valid() {
+   m_values_valid_cv.notify_all();
+ }
+ 
+-void Logger::upload_last_log() {
+-  if(m_log_files.empty()) return;
+-  std::thread(upload_file, m_log_files.back()).detach();
+-}
+-
+-void Logger::upload_last_logs() {
+-  if(m_log_files.empty()) return;
+-  std::thread(upload_files, m_log_files).detach();
+-}
+-
+ void autostart_log(int sleep) {
+   os_time_sleep(sleep * 1000000);
+   logger->start_logging();
+diff --git a/src/logging.h b/src/logging.h
+index b0134e8..ec1ac84 100644
+--- a/src/logging.h
++++ b/src/logging.h
+@@ -49,8 +49,6 @@ public:
+   const std::vector<logData>& get_log_data() const noexcept { return m_log_array; }
+   void clear_log_data() noexcept { m_log_array.clear(); }
+ 
+-  void upload_last_log();
+-  void upload_last_logs();
+ private:
+   std::vector<logData> m_log_array;
+   std::vector<std::string> m_log_files;
 diff --git a/src/overlay_params.cpp b/src/overlay_params.cpp
-index caef330..0a6e0e0 100644
+index f125fc3..7197435 100644
 --- a/src/overlay_params.cpp
 +++ b/src/overlay_params.cpp
-@@ -309,7 +309,6 @@ parse_font_glyph_ranges(const char *str)
+@@ -116,16 +116,12 @@ parse_string_to_keysym_vec(const char *str)
+ #define parse_toggle_hud         parse_string_to_keysym_vec
+ #define parse_toggle_logging     parse_string_to_keysym_vec
+ #define parse_reload_cfg         parse_string_to_keysym_vec
+-#define parse_upload_log         parse_string_to_keysym_vec
+-#define parse_upload_logs        parse_string_to_keysym_vec
+ #define parse_toggle_fps_limit   parse_string_to_keysym_vec
+ 
+ #else
+ #define parse_toggle_hud(x)      {}
+ #define parse_toggle_logging(x)  {}
+ #define parse_reload_cfg(x)      {}
+-#define parse_upload_log(x)      {}
+-#define parse_upload_logs(x)     {}
+ #define parse_toggle_fps_limit(x)    {}
+ #endif
+ 
+@@ -375,7 +371,6 @@ parse_font_glyph_ranges(const char *str)
  #define parse_font_scale(s) parse_float(s)
  #define parse_background_alpha(s) parse_float(s)
  #define parse_alpha(s) parse_float(s)
 -#define parse_permit_upload(s) parse_unsigned(s)
- #define parse_render_mango(s) parse_unsigned(s)
- 
- #define parse_cpu_color(s) parse_color(s)
-@@ -483,7 +482,6 @@ parse_overlay_config(struct overlay_params *params,
+ #define parse_no_small_font(s) parse_unsigned(s) != 0
+ #define parse_cellpadding_y(s) parse_float(s)
+ #define parse_table_columns(s) parse_unsigned(s)
+@@ -568,7 +563,6 @@ parse_overlay_config(struct overlay_params *params,
     params->font_scale_media_player = 0.55f;
     params->log_interval = 100;
     params->media_player_order = { MP_ORDER_TITLE, MP_ORDER_ARTIST, MP_ORDER_ALBUM };
 -   params->permit_upload = 0;
-    params->render_mango = 0;
     params->benchmark_percentiles = { "97", "AVG", "1", "0.1" };
+    params->gpu_load_value = { 60, 90 };
+    params->cpu_load_value = { 60, 90 };
+@@ -581,8 +575,6 @@ parse_overlay_config(struct overlay_params *params,
+    params->toggle_fps_limit = { XK_Shift_L, XK_F1 };
+    params->toggle_logging = { XK_Shift_L, XK_F2 };
+    params->reload_cfg = { XK_Shift_L, XK_F4 };
+-   params->upload_log = { XK_Shift_L, XK_F3 };
+-   params->upload_logs = { XK_Control_L, XK_F3 };
+ #endif
  
+ #ifdef _WIN32
 diff --git a/src/overlay_params.h b/src/overlay_params.h
-index 560465f..c2142e9 100644
+index 521d30b..e05df1c 100644
 --- a/src/overlay_params.h
 +++ b/src/overlay_params.h
-@@ -98,7 +98,6 @@ typedef unsigned long KeySym;
+@@ -81,8 +81,6 @@ typedef unsigned long KeySym;
+    OVERLAY_PARAM_CUSTOM(toggle_fps_limit)            \
+    OVERLAY_PARAM_CUSTOM(toggle_logging)              \
+    OVERLAY_PARAM_CUSTOM(reload_cfg)                  \
+-   OVERLAY_PARAM_CUSTOM(upload_log)                  \
+-   OVERLAY_PARAM_CUSTOM(upload_logs)                 \
+    OVERLAY_PARAM_CUSTOM(offset_x)                    \
+    OVERLAY_PARAM_CUSTOM(offset_y)                    \
+    OVERLAY_PARAM_CUSTOM(background_alpha)            \
+@@ -108,7 +106,6 @@ typedef unsigned long KeySym;
     OVERLAY_PARAM_CUSTOM(cpu_text)                    \
     OVERLAY_PARAM_CUSTOM(gpu_text)                    \
     OVERLAY_PARAM_CUSTOM(log_interval)                \
 -   OVERLAY_PARAM_CUSTOM(permit_upload)               \
-    OVERLAY_PARAM_CUSTOM(render_mango)                \
     OVERLAY_PARAM_CUSTOM(benchmark_percentiles)       \
-    OVERLAY_PARAM_CUSTOM(help)
-@@ -185,7 +184,6 @@ struct overlay_params {
+    OVERLAY_PARAM_CUSTOM(help)                        \
+    OVERLAY_PARAM_CUSTOM(gpu_load_value)              \
+@@ -193,8 +190,6 @@ struct overlay_params {
+    std::vector<KeySym> toggle_fps_limit;
+    std::vector<KeySym> toggle_logging;
+    std::vector<KeySym> reload_cfg;
+-   std::vector<KeySym> upload_log;
+-   std::vector<KeySym> upload_logs;
+    std::string time_format, output_folder, output_file;
+    std::string pci_dev;
+    std::string media_player_name;
+@@ -209,7 +204,6 @@ struct overlay_params {
  
     std::string config_file_path;
     std::unordered_map<std::string,std::string> options;
 -   int permit_upload;
- };
  
- const extern char *overlay_param_names[];
+    size_t font_params_hash;
+ };
+diff --git a/src/vulkan.cpp b/src/vulkan.cpp
+index 2bb55c0..b98856a 100644
+--- a/src/vulkan.cpp
++++ b/src/vulkan.cpp
+@@ -587,8 +587,6 @@ void init_gpu_stats(uint32_t& vendorID, overlay_params& params)
+       }
+    }
+ #endif
+-   if (!params.permit_upload)
+-      printf("MANGOHUD: Uploading is disabled (permit_upload = 0)\n");
+ }
+ 
+ void init_system_info(){
