@@ -2,8 +2,8 @@ EAPI=7
 
 inherit cmake
 
-rz_ghidra_version="7d6b17348f592d52665b457acddeceaf120e3e71"
-ghidra_version="d53e1a0c52b2c7757f55befe44f8584eb53dc448"
+rz_ghidra_version="8df3bf7a6c392e3839dae005e3887ce953b5dabf"
+ghidra_version="8d5d5aa83f7096bc742643486892a858fafca43d"
 
 DESCRIPTION="Deep ghidra decompiler and sleigh disassembler integration for rizin"
 HOMEPAGE="https://github.com/rizinorg/rz-ghidra"
