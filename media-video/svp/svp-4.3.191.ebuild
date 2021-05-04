@@ -22,6 +22,7 @@ DEPEND="
     media-libs/vapoursynth
     dev-libs/libusb
     sys-process/lsof
+    dev-libs/ocl-icd
 "
 RDEPEND="${DEPEND}"
 
