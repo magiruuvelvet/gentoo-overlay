@@ -1,7 +1,7 @@
 # Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=5
+EAPI=7
 WX_GTK_VER="3.0"
 
 inherit autotools eutils toolchain-funcs wxwidgets
@@ -36,4 +36,6 @@ src_prepare() {
 		"${FILESDIR}"/${P}-ffmpeg3.patch \
 		"${FILESDIR}"/${P}-ffmpeg3-1.patch
 	eautoreconf
+
+	default
 }
