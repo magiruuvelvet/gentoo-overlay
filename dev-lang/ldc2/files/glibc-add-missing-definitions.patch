@@ -1,0 +1,20 @@
+diff --git a/runtime/druntime/src/core/sys/posix/dlfcn.d b/runtime/druntime/src/core/sys/posix/dlfcn.d
+index f6476ec3..0b22d043 100644
+--- a/runtime/druntime/src/core/sys/posix/dlfcn.d
++++ b/runtime/druntime/src/core/sys/posix/dlfcn.d
+@@ -127,6 +127,15 @@ version (CRuntime_Glibc)
+     char* dlerror();
+     void* dlopen(const scope char*, int);
+     void* dlsym(void*, const scope char*);
++    int   dladdr(scope const void* addr, Dl_info* info);
++
++    struct Dl_info
++    {
++        const(char)* dli_fname;
++        void*        dli_fbase;
++        const(char)* dli_sname;
++        void*        dli_saddr;
++    }
+ }
+ else version (Darwin)
+ {
