@@ -12,31 +12,17 @@ SRC_URI="https://github.com/BelledonneCommunications/${PN}/archive/${PV}.tar.gz 
 LICENSE="GPL-3"
 KEYWORDS="~amd64 ~x86"
 SLOT="0"
-IUSE="ssl static-libs test"
-RESTRICT="!test? ( test )"
 
-RDEPEND="ssl? ( net-libs/mbedtls )"
+RDEPEND="net-libs/mbedtls"
 DEPEND="${RDEPEND}"
-BDEPEND="test? ( dev-util/bcunit )"
-
-PATCHES="
-    ${FILESDIR}/${PV}-remove-broken-cmake-git-check.patch
-"
-
-src_prepare() {
-	sed -i 's/CU_automated_enable_partial_junit/CU_automated_enable_junit_xml/' \
-		src/tester.c || die "sed failed for src/tester.c"
-
-	cmake_src_prepare
-}
 
 src_configure() {
 	local mycmakeargs=(
 		-DENABLE_POLARSSL=OFF
-		-DENABLE_MBEDTLS="$(usex ssl)"
-		-DENABLE_STATIC="$(usex static-libs)"
-		-DENABLE_TESTS_COMPONENT="$(usex test)"
-		-DENABLE_TESTS="$(usex test)"
+		-DENABLE_MBEDTLS=ON
+		-DENABLE_STATIC=OFF
+		-DENABLE_TESTS_COMPONENT=OFF
+		-DENABLE_TESTS=OFF
 	)
 
 	cmake_src_configure

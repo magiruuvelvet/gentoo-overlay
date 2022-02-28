@@ -12,18 +12,16 @@ SRC_URI="https://github.com/BelledonneCommunications/${PN}/archive/${PV}.tar.gz 
 LICENSE="GPL-3"
 KEYWORDS="~amd64 ~x86"
 SLOT="0"
-IUSE="static-libs test tools"
-RESTRICT="!test? ( test )"
 
-RDEPEND="dev-cpp/belr
-	net-libs/bctoolbox[test?]"
+RDEPEND="net-libs/bctoolbox
+	dev-cpp/belr"
 DEPEND="${RDEPEND}"
 
 src_configure() {
 	local mycmakeargs=(
-		-DENABLE_STATIC="$(usex static-libs)"
-		-DENABLE_TOOLS="$(usex tools)"
-		-DENABLE_UNIT_TESTS="$(usex test)"
+		-DENABLE_STATIC=OFF
+		-DENABLE_TOOLS=OFF
+		-DENABLE_UNIT_TESTS=OFF
 	)
 
 	cmake_src_configure

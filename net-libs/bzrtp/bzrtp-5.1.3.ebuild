@@ -12,19 +12,17 @@ SRC_URI="https://github.com/BelledonneCommunications/${PN}/archive/${PV}.tar.gz 
 LICENSE="GPL-3"
 KEYWORDS="~amd64 ~x86"
 SLOT="0"
-IUSE="sqlite static-libs test"
-RESTRICT="!test? ( test )"
 
-RDEPEND="net-libs/bctoolbox[test?]
-	sqlite? ( dev-db/sqlite:3
-		dev-libs/libxml2:2 )"
+RDEPEND="net-libs/bctoolbox
+	dev-db/sqlite:3
+	dev-libs/libxml2:2"
 DEPEND="${RDEPEND}"
 
 src_configure() {
 	local mycmakeargs=(
-		-DENABLE_STATIC="$(usex static-libs)"
-		-DENABLE_TESTS="$(usex test)"
-		-DENABLE_ZIDCACHE="$(usex sqlite)"
+		-DENABLE_STATIC=OFF
+		-DENABLE_TESTS=OFF
+		-DENABLE_ZIDCACHE=ON
 	)
 
 	cmake_src_configure

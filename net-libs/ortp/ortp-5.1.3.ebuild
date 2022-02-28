@@ -5,25 +5,25 @@ EAPI=7
 
 inherit cmake
 
-DESCRIPTION="VCard standard format manipulation library"
-HOMEPAGE="https://gitlab.linphone.org/BC/public/belcard"
+DESCRIPTION="Open Real-time Transport Protocol (RTP, RFC3550) stack"
+HOMEPAGE="https://gitlab.linphone.org/BC/public/ortp"
 SRC_URI="https://github.com/BelledonneCommunications/${PN}/archive/${PV}.tar.gz -> ${P}.tar.gz"
 
 LICENSE="GPL-3"
 KEYWORDS="~amd64 ~x86"
 SLOT="0"
-IUSE="static-libs test tools"
-RESTRICT="!test? ( test )"
 
-RDEPEND="dev-cpp/belr
-	net-libs/bctoolbox[test?]"
+RDEPEND="net-libs/bctoolbox"
 DEPEND="${RDEPEND}"
 
 src_configure() {
 	local mycmakeargs=(
-		-DENABLE_STATIC="$(usex static-libs)"
-		-DENABLE_TOOLS="$(usex tools)"
-		-DENABLE_UNIT_TESTS="$(usex test)"
+		-DENABLE_DEBUG_LOGS=OFF
+		-DENABLE_DOC=OFF
+		-DENABLE_NTP_TIMESTAMP=OFF
+		-DENABLE_PERF=OFF
+		-DENABLE_STATIC=OFF
+		-DENABLE_TESTS=OFF
 	)
 
 	cmake_src_configure

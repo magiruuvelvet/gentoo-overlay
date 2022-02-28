@@ -5,25 +5,22 @@ EAPI=7
 
 inherit cmake
 
-DESCRIPTION="VCard standard format manipulation library"
-HOMEPAGE="https://gitlab.linphone.org/BC/public/belcard"
+DESCRIPTION="Language recognition library by Belledonne Communications"
+HOMEPAGE="https://gitlab.linphone.org/BC/public/belr"
 SRC_URI="https://github.com/BelledonneCommunications/${PN}/archive/${PV}.tar.gz -> ${P}.tar.gz"
 
 LICENSE="GPL-3"
 KEYWORDS="~amd64 ~x86"
 SLOT="0"
-IUSE="static-libs test tools"
-RESTRICT="!test? ( test )"
 
-RDEPEND="dev-cpp/belr
-	net-libs/bctoolbox[test?]"
+RDEPEND="net-libs/bctoolbox"
 DEPEND="${RDEPEND}"
 
 src_configure() {
 	local mycmakeargs=(
-		-DENABLE_STATIC="$(usex static-libs)"
-		-DENABLE_TOOLS="$(usex tools)"
-		-DENABLE_UNIT_TESTS="$(usex test)"
+		-DENABLE_STATIC=OFF
+		-DENABLE_TESTS=OFF
+		-DENABLE_TOOLS=OFF
 	)
 
 	cmake_src_configure

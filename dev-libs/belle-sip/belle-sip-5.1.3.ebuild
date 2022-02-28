@@ -12,19 +12,19 @@ SRC_URI="https://github.com/BelledonneCommunications/${PN}/archive/${PV}.tar.gz 
 LICENSE="GPL-3"
 KEYWORDS="~amd64 ~x86"
 SLOT="0"
-IUSE="static-libs test zeroconf"
-RESTRICT="test" # fails
 
-RDEPEND="net-libs/bctoolbox[test?]
+RDEPEND="
 	sys-libs/zlib:=
-	zeroconf? ( net-dns/avahi[mdnsresponder-compat] )"
+	net-libs/bctoolbox
+	dev-cpp/belr
+"
 DEPEND="${RDEPEND}"
 
 src_configure() {
 	local mycmakeargs=(
-		-DENABLE_MDNS="$(usex zeroconf)"
-		-DENABLE_STATIC="$(usex static-libs)"
-		-DENABLE_TESTS="$(usex test)"
+		-DENABLE_MDNS=OFF
+		-DENABLE_STATIC=OFF
+		-DENABLE_TESTS=OFF
 	)
 
 	cmake_src_configure
