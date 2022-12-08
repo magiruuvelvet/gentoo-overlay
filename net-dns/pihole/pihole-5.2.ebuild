@@ -2,7 +2,7 @@
 
 EAPI=7
 
-inherit eutils cmake-utils
+inherit eutils cmake
 
 SRC_URI="https://github.com/pi-hole/FTL/archive/v${PV}.tar.gz -> pihole-${PV}.tar.gz"
 
