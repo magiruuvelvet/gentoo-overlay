@@ -1,6 +1,6 @@
 EAPI=7
 
-inherit git-r3 cmake-utils
+inherit git-r3 cmake
 
 DESCRIPTION="A glossy Matrix collaboration client for desktop"
 HOMEPAGE="https://github.com/magiruuvelvet/qelement"
