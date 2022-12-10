@@ -33,7 +33,7 @@ ruby_add_rdepend "
 	>=dev-ruby/jaro_winkler-1.5
 	>=dev-ruby/reverse_markdown-2.0
 	<dev-ruby/reverse_markdown-3.0
-	=dev-ruby/rubocop-1.12.1
+	>=dev-ruby/rubocop-1.40.0
 	>=dev-ruby/tilt-2.0
 	>=dev-ruby/diff-lcs-1.4
 "
