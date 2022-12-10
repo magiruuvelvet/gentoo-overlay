@@ -1,8 +1,8 @@
 diff --git a/src/config.cpp b/src/config.cpp
-index 291fddf..58b8ce9 100644
+index 65eff07..0c8c114 100644
 --- a/src/config.cpp
 +++ b/src/config.cpp
-@@ -64,31 +64,14 @@ std::string get_program_name() {
+@@ -65,36 +65,14 @@ std::string get_program_name() {
  static void enumerate_config_files(std::vector<std::string>& paths) {
      static const char *mangohud_dir = "/MangoHud/";
  
@@ -17,6 +17,11 @@ index 291fddf..58b8ce9 100644
      }
  
      paths.push_back(config_dir + mangohud_dir + "MangoHud.conf");
+-
+-    if (is_blacklisted()) {
+-        // Don't bother looking for conf file
+-        return;
+-    }
 -
 -    if (!program_name.empty()) {
 -        paths.push_back(config_dir + mangohud_dir + program_name + ".conf");
@@ -33,4 +38,4 @@ index 291fddf..58b8ce9 100644
 -     }
  }
  
- bool parseConfigFile(overlay_params& params) {
+ void parseConfigFile(overlay_params& params) {
