@@ -1,6 +1,6 @@
 EAPI=7
 
-inherit cmake-utils
+inherit cmake
 
 DESCRIPTION="Command-line tools for converting between MessagePack and JSON"
 HOMEPAGE="https://github.com/ludocode/msgpack-tools"
