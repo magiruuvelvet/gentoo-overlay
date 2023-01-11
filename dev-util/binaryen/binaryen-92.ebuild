@@ -1,6 +1,6 @@
 EAPI=7
 
-inherit cmake-utils
+inherit cmake
 
 DESCRIPTION="Сompiler and toolchain infrastructure library for WebAssembly, written in C++"
 HOMEPAGE="https://github.com/WebAssembly/binaryen"
