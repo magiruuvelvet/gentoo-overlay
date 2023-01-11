@@ -1,8 +1,8 @@
 diff --git a/driver/cl_options.cpp b/driver/cl_options.cpp
-index 125fcd61..beeb036a 100644
+index a4bdddcfae..5f4480df14 100644
 --- a/driver/cl_options.cpp
 +++ b/driver/cl_options.cpp
-@@ -383,7 +383,7 @@ cl::list<std::string>
+@@ -395,7 +395,7 @@ cl::list<std::string>
                     cl::Prefix);
  
  cl::list<std::string>
@@ -12,7 +12,7 @@ index 125fcd61..beeb036a 100644
  
  cl::opt<std::string>
 diff --git a/driver/linker-gcc.cpp b/driver/linker-gcc.cpp
-index f597d6d2..573990e8 100644
+index a53936a9aa..4a1fbaefb7 100644
 --- a/driver/linker-gcc.cpp
 +++ b/driver/linker-gcc.cpp
 @@ -208,7 +208,7 @@ bool ArgsBuilder::isLldDefaultLinker() {
@@ -24,22 +24,15 @@ index f597d6d2..573990e8 100644
  }
  
  //////////////////////////////////////////////////////////////////////////////
-@@ -597,13 +597,13 @@ void ArgsBuilder::addLinker() {
-     // to each other as required by druntime's rt.sections_android, contrary to
-     // gold and lld as of Android NDK r21d).
-     if (global.params.targetTriple->getEnvironment() == llvm::Triple::Android) {
--      linker = "bfd";
-+      linker = "lld";
-     }
-     // Otherwise default to ld.gold for Linux due to ld.bfd issues with ThinLTO
-     // (see #2278) and older bfd versions stripping llvm.used symbols (e.g.,
-     // ModuleInfo refs) with --gc-sections (see #2870).
-     else {
--      linker = "gold";
-+      linker = "lld";
-     }
+@@ -604,7 +604,7 @@ void ArgsBuilder::addLinker() {
+   // gold and lld as of Android NDK r21d).
+   if (global.params.targetTriple->getEnvironment() == llvm::Triple::Android &&
+       opts::linker.getNumOccurrences() == 0) {
+-    linker = "bfd";
++    linker = "lld";
    }
  
+   if (!linker.empty())
 @@ -659,8 +659,8 @@ void ArgsBuilder::addDefaultPlatformLibs() {
        args.push_back("-lm");
        break;
@@ -52,10 +45,10 @@ index f597d6d2..573990e8 100644
      args.push_back("-lrt");
      args.push_back("-ldl");
 diff --git a/driver/main.cpp b/driver/main.cpp
-index abec31c3..c66a7336 100644
+index aed13716aa..1d3b7be1bf 100644
 --- a/driver/main.cpp
 +++ b/driver/main.cpp
-@@ -780,7 +780,8 @@ void registerPredefinedTargetVersions() {
+@@ -821,7 +821,8 @@ void registerPredefinedTargetVersions() {
        VersionCondition::addPredefinedGlobalIdent("CRuntime_UClibc");
      } else {
        VersionCondition::addPredefinedGlobalIdent("CRuntime_Glibc");
@@ -66,7 +59,7 @@ index abec31c3..c66a7336 100644
      break;
    case llvm::Triple::Haiku:
 diff --git a/driver/tool.cpp b/driver/tool.cpp
-index 742c952c..e4e29465 100644
+index 7d1a7f0e80..beeebc85c7 100644
 --- a/driver/tool.cpp
 +++ b/driver/tool.cpp
 @@ -29,15 +29,15 @@
