@@ -1,13 +1,13 @@
-EAPI=7
-USE_RUBY="ruby25 ruby26 ruby27"
+EAPI=8
+
+USE_RUBY="ruby26 ruby27 ruby30 ruby31"
 
 RUBY_FAKEGEM_RECIPE_TEST="rspec3"
-
 RUBY_FAKEGEM_RECIPE_DOC="none"
 
 inherit ruby-fakegem
 
-DESCRIPTION="ruby bindings to libgit2 "
+DESCRIPTION="ruby bindings to libgit2"
 HOMEPAGE="https://github.com/libgit2/rugged"
 
 LICENSE="MIT"
