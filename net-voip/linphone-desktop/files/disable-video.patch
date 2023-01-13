@@ -1,0 +1,37 @@
+diff --git a/linphone-app/src/app/cli/Cli.cpp b/linphone-app/src/app/cli/Cli.cpp
+index 3d84ad6..fa2223b 100644
+--- a/linphone-app/src/app/cli/Cli.cpp
++++ b/linphone-app/src/app/cli/Cli.cpp
+@@ -182,7 +182,6 @@ static void cliInitiateConference (QHash<QString, QString> &args) {
+ 
+ 	qInfo() << QStringLiteral("Create conference with id: `%1`.").arg(id);
+ 	auto confParameters = core->createConferenceParams();
+-	confParameters->setVideoEnabled(false);// Video is not yet fully supported by the application in conference
+ 	conference = core->createConferenceWithParams(confParameters);
+ 	conference->setId(Utils::appStringToCoreString(id));
+ 
+diff --git a/linphone-app/src/components/conference/ConferenceAddModel.cpp b/linphone-app/src/components/conference/ConferenceAddModel.cpp
+index 5087be2..77c3387 100644
+--- a/linphone-app/src/components/conference/ConferenceAddModel.cpp
++++ b/linphone-app/src/components/conference/ConferenceAddModel.cpp
+@@ -149,7 +149,6 @@ void ConferenceHelperModel::ConferenceAddModel::update () {
+   shared_ptr<linphone::Conference> conference = mConferenceHelperModel->mCore->getConference();
+   if(!conference){
+     auto parameters = mConferenceHelperModel->mCore->createConferenceParams();
+-    parameters->setVideoEnabled(false);// Video is not yet fully supported by the application in conference
+     conference = mConferenceHelperModel->mCore->createConferenceWithParams(parameters);
+   }
+   auto currentCalls = CoreManager::getInstance()->getCore()->getCalls();
+diff --git a/linphone-app/src/components/settings/SettingsModel.cpp b/linphone-app/src/components/settings/SettingsModel.cpp
+index 6f711bb..c5241cc 100644
+--- a/linphone-app/src/components/settings/SettingsModel.cpp
++++ b/linphone-app/src/components/settings/SettingsModel.cpp
+@@ -478,7 +478,7 @@ void SettingsModel::setVideoDefinition (const QVariantMap &definition) {
+ }
+ 
+ bool SettingsModel::getVideoSupported () const {
+-	return CoreManager::getInstance()->getCore()->videoSupported();
++	return false;
+ }
+ 
+ // -----------------------------------------------------------------------------

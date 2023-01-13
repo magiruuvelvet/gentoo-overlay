@@ -6,15 +6,14 @@ old="$1"
 new="$2"
 
 linphone_pkgs=(
-    "dev-libs/liblinphone"
-    "dev-libs/belcard"
-    "dev-libs/belle-sip"
-    "dev-libs/lime"
-    "media-libs/mediastreamer2"
-    "net-libs/bctoolbox"
-    "net-libs/bzrtp"
-    "net-libs/ortp"
-    "dev-cpp/belr"
+    dev-libs/liblinphone
+    net-libs/bctoolbox
+    dev-cpp/belr
+    dev-libs/belle-sip
+    net-libs/ortp
+    net-libs/bzrtp
+    media-libs/mediastreamer2
+    dev-libs/belcard
 )
 
 cd ../..

@@ -13,10 +13,8 @@ LICENSE="GPL-3"
 KEYWORDS="~amd64 ~x86"
 SLOT="0"
 IUSE=""
-RESTRICT="test" # needs sdk
 
-RDEPEND="dev-libs/belcard
-	dev-libs/liblinphone
+RDEPEND="dev-libs/liblinphone
 	dev-qt/qtconcurrent:5
 	dev-qt/qtcore:5
 	dev-qt/qtdbus:5
@@ -26,9 +24,10 @@ RDEPEND="dev-libs/belcard
 	dev-qt/qtquickcontrols2:5[widgets]
 	dev-qt/qtsvg:5
 	dev-qt/qtwidgets:5
-	media-libs/mediastreamer2[zrtp,jpeg]
+	media-libs/mediastreamer2[jpeg]
 	net-libs/bctoolbox
-	net-libs/ortp"
+	net-libs/ortp
+	dev-libs/belcard"
 DEPEND="${RDEPEND}"
 BDEPEND="dev-vcs/git
 	dev-qt/linguist-tools:5
@@ -36,9 +35,15 @@ BDEPEND="dev-vcs/git
 
 DOCS=( {CHANGELOG,README}.md )
 
+PATCHES="
+	${FILESDIR}/disable-packaging.patch
+	${FILESDIR}/disable-video.patch
+"
+
 src_prepare() {
 	# bc_git_version needs git repository
 	pushd linphone-app || die "pushd failed"
+	git config --global init.defaultBranch master # mimic upstream branch name
 	git init > /dev/null || die "git init failed"
 	git config user.email "${PN}@gentoo.org" || die "git config failed"
 	git config user.name "${PN}" || die "git config failed"
@@ -59,15 +64,19 @@ src_prepare() {
 	sed -i "/install(FILES \"\${CMAKE_CURRENT_BINARY_DIR}\/..\/..\/qt.conf/d" \
 		linphone-app/cmake_builder/linphone_package/CMakeLists.txt \
 		|| die "sed failed for linphone_package/CMakeLists.txt"
+	# Remove plugins directory (only contains an example plugin, not needed)
+	rm -r plugins || die "failed to delete plugins directory"
 
 	cmake_src_prepare
 }
 
 src_configure() {
 	local mycmakeargs=(
-		-DENABLE_APP_PACKAGING=NO
-		-DENABLE_BUILD_VERBOSE=YES
-		-DENABLE_UPDATE_CHECK=NO
+		-DENABLE_APP_PACKAGING=OFF
+		-DENABLE_BUILD_VERBOSE=ON
+		-DENABLE_UPDATE_CHECK=OFF
+		-DENABLE_UNIT_TESTS=OFF
+		-DENABLE_BUILD_APP_PLUGINS=OFF
 	)
 	cmake_src_configure
 }
