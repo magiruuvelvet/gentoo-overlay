@@ -1,9 +1,0 @@
-net-voip/linphone-desktop
-dev-libs/liblinphone
-net-libs/bctoolbox
-dev-cpp/belr
-dev-libs/belle-sip
-net-libs/ortp
-net-libs/bzrtp
-media-libs/mediastreamer2
-dev-libs/belcard
