@@ -33,10 +33,10 @@ src_configure() {
         -DBUILD_TRANSLATIONS=$(usex translations)
     )
 
-    cmake-utils_src_configure
+    cmake_src_configure || die
 }
 
 src_install() {
-    cmake-utils_src_install
+    cmake_src_install || die
     rm -r "${D}/usr/share/doc"
 }
