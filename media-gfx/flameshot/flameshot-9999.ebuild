@@ -23,6 +23,15 @@ DEPEND="
 "
 RDEPEND="${DEPEND}"
 
+src_configure() {
+    local mycmakeargs=(
+        -DDISABLE_UPDATE_CHECKER=ON
+        -DUSE_LAUNCHER_ABSOLUTE_PATH=OFF
+    )
+
+    cmake_src_configure
+}
+
 pkg_postinst() {
     xdg_desktop_database_update
 }
