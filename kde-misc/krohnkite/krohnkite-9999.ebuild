@@ -12,6 +12,10 @@ SLOT="0"
 KEYWORDS=""
 IUSE=""
 
+PATCHES="
+    ${FILESDIR}/pr-214.patch
+"
+
 # IMPORTANT!
 # this ebuild is a hack which only works on my local machine
 
