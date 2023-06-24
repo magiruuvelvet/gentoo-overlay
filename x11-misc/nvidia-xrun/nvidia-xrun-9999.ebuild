@@ -2,6 +2,8 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
+# WARNING: obsolete, no longer in use by myself
+
 EAPI=6
 
 inherit eutils git-r3
@@ -20,7 +22,7 @@ RDEPEND="
         sys-power/bbswitch
         x11-apps/xinit
         x11-base/xorg-server[xorg]
-        x11-drivers/nvidia-drivers[X,driver]
+        x11-drivers/nvidia-drivers[X]
         x11-libs/libXrandr"
 
 src_prepare() {
