@@ -11,6 +11,10 @@ MY_PN="${PN/plasma-}"
 DESCRIPTION="Plasma 5 applet in order to show window buttons in your panels"
 HOMEPAGE="https://github.com/psifidotos/applet-window-buttons"
 
+PATCHES="
+	${FILESDIR}/pr-191.patch
+"
+
 if [[ ${PV} == 9999 ]]; then
 	inherit git-r3
 	SRC_URI=""
