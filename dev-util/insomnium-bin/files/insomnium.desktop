@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Insomnium
+Icon=insomnium
+Comment=API testing tool
+Exec=insomnium
+Version=1.0
+Type=Application
+Categories=Development;IDE;
+Terminal=false
