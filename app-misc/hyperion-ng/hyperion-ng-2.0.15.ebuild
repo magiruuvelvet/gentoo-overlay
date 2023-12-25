@@ -88,6 +88,15 @@ src_configure() {
     cmake_src_configure
 }
 
+src_install() {
+    cmake_src_install
+
+    # install a better systemd unit which supports the --user flag
+    local systemd_unit="${ED}/usr/share/hyperion/service/hyperion.systemd"
+    rm "${systemd_unit}"
+    cp "${FILESDIR}/hyperion.service" "${systemd_unit}"
+}
+
 pkg_postinst() {
     xdg_desktop_database_update
 }
