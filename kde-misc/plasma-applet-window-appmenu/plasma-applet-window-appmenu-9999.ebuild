@@ -27,7 +27,7 @@ LICENSE="GPL-2"
 SLOT="5"
 
 DEPEND="
-	>=kde-frameworks/plasma-${FRAMEWORKS_MINIMAL}:5
+	>=kde-plasma/libplasma-${FRAMEWORKS_MINIMAL}:5
 	>=kde-frameworks/frameworkintegration-${FRAMEWORKS_MINIMAL}:5
 	>=dev-qt/qdbus-${QT_MINIMAL}
 	x11-libs/libxcb

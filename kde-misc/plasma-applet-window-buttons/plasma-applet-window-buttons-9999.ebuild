@@ -30,7 +30,7 @@ fi
 IUSE=""
 
 DEPEND="
-	kde-frameworks/plasma
+	kde-plasma/libplasma
 	kde-frameworks/frameworkintegration
 	dev-qt/qtdbus
 	x11-libs/libxcb

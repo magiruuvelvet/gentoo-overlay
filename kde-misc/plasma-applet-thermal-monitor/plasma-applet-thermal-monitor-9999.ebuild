@@ -12,7 +12,7 @@ SLOT=0
 IUSE=""
 
 DEPEND="
-    kde-frameworks/plasma
+    kde-plasma/libplasma
     kde-frameworks/frameworkintegration
     sys-apps/lm-sensors
 "
