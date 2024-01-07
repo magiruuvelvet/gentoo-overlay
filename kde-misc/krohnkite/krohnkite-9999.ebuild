@@ -1,6 +1,6 @@
 EAPI=7
 
-inherit eutils git-r3
+inherit git-r3
 
 EGIT_REPO_URI="https://github.com/esjeon/krohnkite.git"
 
