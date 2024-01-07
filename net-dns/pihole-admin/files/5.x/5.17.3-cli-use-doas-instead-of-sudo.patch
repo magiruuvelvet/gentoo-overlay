@@ -1,0 +1,65 @@
+diff --git a/advanced/Scripts/chronometer.sh b/advanced/Scripts/chronometer.sh
+index bb94a85..278b393 100755
+--- a/advanced/Scripts/chronometer.sh
++++ b/advanced/Scripts/chronometer.sh
+@@ -155,7 +155,7 @@ get_init_stats() {
+         local sys_throttle_raw
+         local sys_rev_raw
+ 
+-        sys_throttle_raw=$(vgt=$(sudo vcgencmd get_throttled); echo "${vgt##*x}")
++        sys_throttle_raw=$(vgt=$(doas vcgencmd get_throttled); echo "${vgt##*x}")
+ 
+         # Active Throttle Notice: https://bit.ly/2gnunOo
+         if [[ "$sys_throttle_raw" != "0" ]]; then
+diff --git a/advanced/Scripts/piholeLogFlush.sh b/advanced/Scripts/piholeLogFlush.sh
+index a631af8..fc59d1e 100755
+--- a/advanced/Scripts/piholeLogFlush.sh
++++ b/advanced/Scripts/piholeLogFlush.sh
+@@ -66,7 +66,7 @@ else
+     deleted=$(pihole-FTL sqlite3 -ni "${DBFILE}" "DELETE FROM query_storage WHERE timestamp >= strftime('%s','now')-86400; select changes() from query_storage limit 1")
+ 
+     # Restart pihole-FTL to force reloading history
+-    sudo pihole restartdns
++    doas pihole restartdns
+ fi
+ 
+ if [[ "$@" != *"quiet"* ]]; then
+diff --git a/advanced/Scripts/webpage.sh b/advanced/Scripts/webpage.sh
+index f7563e6..25246dc 100755
+--- a/advanced/Scripts/webpage.sh
++++ b/advanced/Scripts/webpage.sh
+@@ -142,13 +142,13 @@ valid_ip6() {
+ }
+ 
+ SetWebPassword() {
+-    if [ "${SUDO_USER}" == "www-data" ]; then
++    if [ "${DOAS_USER}" == "www-data" ]; then
+         echo "Security measure: user www-data is not allowed to change webUI password!"
+         echo "Exiting"
+         exit 1
+     fi
+ 
+-    if [ "${SUDO_USER}" == "lighttpd" ]; then
++    if [ "${DOAS_USER}" == "lighttpd" ]; then
+         echo "Security measure: user lighttpd is not allowed to change webUI password!"
+         echo "Exiting"
+         exit 1
+diff --git a/pihole b/pihole
+index c15ede5..8abb2e7 100755
+--- a/pihole
++++ b/pihole
+@@ -466,11 +466,11 @@ esac
+ 
+ # Must be root to use this tool
+ if [[ ! $EUID -eq 0 ]];then
+-  if [[ -x "$(command -v sudo)" ]]; then
+-    exec sudo bash "$0" "$@"
++  if [[ -x "$(command -v doas)" ]]; then
++    exec doas bash "$0" "$@"
+     exit $?
+   else
+-    echo -e "  ${CROSS} sudo is needed to run pihole commands.  Please run this script as root or install sudo."
++    echo -e "  ${CROSS} doas is needed to run pihole commands.  Please run this script as root or install doas."
+     exit 1
+   fi
+ fi

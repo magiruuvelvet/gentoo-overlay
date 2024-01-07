@@ -1,0 +1,87 @@
+diff --git a/login.php b/login.php
+index 34b11da..cbd54fd 100644
+--- a/login.php
++++ b/login.php
+@@ -74,7 +74,7 @@ require 'scripts/pi-hole/php/header.php';
+                                     a new password (or explicitly disable the password by setting an empty password)
+                                     using the command
+                                 </p>
+-                                <pre>sudo pihole -a -p</pre>
++                                <pre>doas pihole -a -p</pre>
+                             </div>
+                         </div>
+                     </div>
+diff --git a/scripts/pi-hole/php/debug.php b/scripts/pi-hole/php/debug.php
+index a994fee..5a7daa8 100644
+--- a/scripts/pi-hole/php/debug.php
++++ b/scripts/pi-hole/php/debug.php
+@@ -52,7 +52,7 @@ function echoEvent($datatext)
+ }
+ 
+ // Execute "pihole" using Web option
+-$command = 'export TERM=dumb && sudo pihole -d -w';
++$command = 'export TERM=dumb && doas pihole -d -w';
+ 
+ // Add auto-upload option
+ if (isset($_GET['upload'])) {
+diff --git a/scripts/pi-hole/php/func.php b/scripts/pi-hole/php/func.php
+index ca5ba58..73545a8 100644
+--- a/scripts/pi-hole/php/func.php
++++ b/scripts/pi-hole/php/func.php
+@@ -156,7 +156,7 @@ if (!function_exists('hash_equals')) {
+  *
+  * would execute command
+  *
+- *   sudo pihole -h
++ *   doas pihole -h
+  *
+  * and returns output of that command as a string.
+  *
+@@ -167,7 +167,7 @@ function pihole_execute($argument_string)
+     $escaped = escapeshellcmd($argument_string);
+     $output = null;
+     $return_status = -1;
+-    $command = 'sudo /usr/bin/pihole '.$escaped;
++    $command = 'doas /usr/bin/pihole '.$escaped;
+     exec($command, $output, $return_status);
+     if ($return_status !== 0) {
+         trigger_error("Executing {$command} failed.", E_USER_WARNING);
+diff --git a/scripts/pi-hole/php/gravity.sh.php b/scripts/pi-hole/php/gravity.sh.php
+index 44a747a..764f530 100644
+--- a/scripts/pi-hole/php/gravity.sh.php
++++ b/scripts/pi-hole/php/gravity.sh.php
+@@ -41,7 +41,7 @@ function echoEvent($datatext)
+     echo 'data: '.implode("\ndata: ", explode("\n", $datatext))."\n\n";
+ }
+ 
+-$proc = popen('sudo pihole -g', 'r');
++$proc = popen('doas pihole -g', 'r');
+ while (!feof($proc)) {
+     echoEvent(fread($proc, 4096));
+ }
+diff --git a/scripts/pi-hole/php/queryads.php b/scripts/pi-hole/php/queryads.php
+index b636852..0a0d2d6 100644
+--- a/scripts/pi-hole/php/queryads.php
++++ b/scripts/pi-hole/php/queryads.php
+@@ -61,7 +61,7 @@ if (isset($_GET['showall'])) {
+     $options .= ' -all';
+ }
+ 
+-$proc = popen('sudo pihole -q '.$url.$options, 'r');
++$proc = popen('doas pihole -q '.$url.$options, 'r');
+ while (!feof($proc)) {
+     echoEvent(fread($proc, 4096), $url);
+ }
+diff --git a/scripts/pi-hole/php/savesettings.php b/scripts/pi-hole/php/savesettings.php
+index 8b528d2..0e92961 100644
+--- a/scripts/pi-hole/php/savesettings.php
++++ b/scripts/pi-hole/php/savesettings.php
+@@ -425,7 +425,7 @@ if (isset($_POST['field'])) {
+             if (isset($_POST['webtheme'])) {
+                 global $available_themes;
+                 if (array_key_exists($_POST['webtheme'], $available_themes)) {
+-                    exec('sudo pihole -a theme '.$_POST['webtheme']);
++                    exec('doas pihole -a theme '.$_POST['webtheme']);
+                 }
+             }
+             $success .= 'The webUI settings have been updated';

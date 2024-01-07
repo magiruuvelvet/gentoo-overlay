@@ -1,0 +1,320 @@
+diff --git a/advanced/Scripts/pihole-reenable.sh b/advanced/Scripts/pihole-reenable.sh
+index 93ec3b9..b755028 100755
+--- a/advanced/Scripts/pihole-reenable.sh
++++ b/advanced/Scripts/pihole-reenable.sh
+@@ -17,7 +17,7 @@
+ # This ensures that pihole ends up in the correct state after a sequence of
+ # commands suchs as: `pihole disable 30s; pihole enable; pihole disable`
+ 
+-readonly PI_HOLE_BIN_DIR="/usr/local/bin"
++readonly PI_HOLE_BIN_DIR="/usr/bin"
+ 
+ sleep "${1}"
+ "${PI_HOLE_BIN_DIR}"/pihole enable
+diff --git a/advanced/Scripts/piholeLogFlush.sh b/advanced/Scripts/piholeLogFlush.sh
+index b06aac8..a631af8 100755
+--- a/advanced/Scripts/piholeLogFlush.sh
++++ b/advanced/Scripts/piholeLogFlush.sh
+@@ -31,35 +31,35 @@ if [ -z "$DBFILE" ]; then
+ fi
+ 
+ if [[ "$@" != *"quiet"* ]]; then
+-    echo -ne "  ${INFO} Flushing /var/log/pihole/pihole.log ..."
++    echo -ne "  ${INFO} Flushing /var/log/pihole.log ..."
+ fi
+ if [[ "$@" == *"once"* ]]; then
+     # Nightly logrotation
+-    if command -v /usr/sbin/logrotate >/dev/null; then
++    if command -v /usr/bin/logrotate >/dev/null; then
+         # Logrotate once
+-        /usr/sbin/logrotate --force --state "${STATEFILE}" /etc/pihole/logrotate
++        /usr/bin/logrotate --force --state "${STATEFILE}" /etc/pihole/logrotate
+     else
+         # Copy pihole.log over to pihole.log.1
+         # and empty out pihole.log
+         # Note that moving the file is not an option, as
+         # dnsmasq would happily continue writing into the
+         # moved file (it will have the same file handler)
+-        cp -p /var/log/pihole/pihole.log /var/log/pihole/pihole.log.1
+-        echo " " > /var/log/pihole/pihole.log
+-        chmod 640 /var/log/pihole/pihole.log
++        cp -p /var/log/pihole.log /var/log/pihole.log.1
++        echo " " > /var/log/pihole.log
++        chmod 644 /var/log/pihole.log
+     fi
+ else
+     # Manual flushing
+-    if command -v /usr/sbin/logrotate >/dev/null; then
++    if command -v /usr/bin/logrotate >/dev/null; then
+         # Logrotate twice to move all data out of sight of FTL
+-        /usr/sbin/logrotate --force --state "${STATEFILE}" /etc/pihole/logrotate; sleep 3
+-        /usr/sbin/logrotate --force --state "${STATEFILE}" /etc/pihole/logrotate
++        /usr/bin/logrotate --force --state "${STATEFILE}" /etc/pihole/logrotate; sleep 3
++        /usr/bin/logrotate --force --state "${STATEFILE}" /etc/pihole/logrotate
+     else
+         # Flush both pihole.log and pihole.log.1 (if existing)
+-        echo " " > /var/log/pihole/pihole.log
+-        if [ -f /var/log/pihole/pihole.log.1 ]; then
+-            echo " " > /var/log/pihole/pihole.log.1
+-            chmod 640 /var/log/pihole/pihole.log.1
++        echo " " > /var/log/pihole.log
++        if [ -f /var/log/pihole.log.1 ]; then
++            echo " " > /var/log/pihole.log.1
++            chmod 644 /var/log/pihole.log.1
+         fi
+     fi
+     # Delete most recent 24 hours from FTL's database, leave even older data intact (don't wipe out all history)
+@@ -70,6 +70,6 @@ else
+ fi
+ 
+ if [[ "$@" != *"quiet"* ]]; then
+-    echo -e "${OVER}  ${TICK} Flushed /var/log/pihole/pihole.log"
++    echo -e "${OVER}  ${TICK} Flushed /var/log/pihole.log"
+     echo -e "  ${TICK} Deleted ${deleted} queries from database"
+ fi
+diff --git a/advanced/Scripts/webpage.sh b/advanced/Scripts/webpage.sh
+index 62ab4ea..f7563e6 100755
+--- a/advanced/Scripts/webpage.sh
++++ b/advanced/Scripts/webpage.sh
+@@ -24,10 +24,10 @@ readonly gravityDBfile="/etc/pihole/gravity.db"
+ 
+ 
+ readonly setupVars="/etc/pihole/setupVars.conf"
+-readonly PI_HOLE_BIN_DIR="/usr/local/bin"
++readonly PI_HOLE_BIN_DIR="/usr/bin"
+ 
+ # Root of the web server
+-readonly webroot="/var/www/html"
++readonly webroot="/srv/http/pihole/admin"
+ 
+ # Source utils script
+ utilsfile="/opt/pihole/utils.sh"
+diff --git a/advanced/Templates/pihole.sudo b/advanced/Templates/pihole.sudo
+index 708309b..17b6a5c 100644
+--- a/advanced/Templates/pihole.sudo
++++ b/advanced/Templates/pihole.sudo
+@@ -7,3 +7,4 @@
+ # This file is copyright under the latest version of the EUPL.
+ # Please see LICENSE file for your rights under this license.
+ #
++http ALL=NOPASSWD: /usr/bin/pihole
+diff --git a/advanced/dnsmasq.conf.original b/advanced/dnsmasq.conf.original
+index 4aa5a8b..9c45eb6 100644
+--- a/advanced/dnsmasq.conf.original
++++ b/advanced/dnsmasq.conf.original
+@@ -646,3 +646,4 @@
+ 
+ # Include all files in a directory which end in .conf
+ #conf-dir=/etc/dnsmasq.d/*.conf
++conf-dir=/etc/dnsmasq.d/,*.conf
+diff --git a/gravity.sh b/gravity.sh
+index 62631e3..ad96826 100755
+--- a/gravity.sh
++++ b/gravity.sh
+@@ -16,10 +16,10 @@ export LC_ALL=C
+ coltable="/opt/pihole/COL_TABLE"
+ source "${coltable}"
+ # shellcheck disable=SC1091
+-source "/etc/.pihole/advanced/Scripts/database_migration/gravity-db.sh"
++source "/opt/pihole/database_migration/gravity-db.sh"
+ 
+ basename="pihole"
+-PIHOLE_COMMAND="/usr/local/bin/${basename}"
++PIHOLE_COMMAND="/usr/bin/${basename}"
+ 
+ piholeDir="/etc/${basename}"
+ 
+@@ -36,8 +36,8 @@ piholeGitDir="/etc/.pihole"
+ gravityDBfile_default="${piholeDir}/gravity.db"
+ # GRAVITYDB may be overwritten by source pihole-FTL.conf below
+ GRAVITYDB="${gravityDBfile_default}"
+-gravityDBschema="${piholeGitDir}/advanced/Templates/gravity.db.sql"
+-gravityDBcopy="${piholeGitDir}/advanced/Templates/gravity_copy.sql"
++gravityDBschema="/opt/pihole/gravity.db.sql"
++gravityDBcopy="/opt/pihole/gravity_copy.sql"
+ 
+ domainsExtension="domains"
+ curl_connect_timeout=10
+diff --git a/pihole b/pihole
+index 1d9ad82..c15ede5 100755
+--- a/pihole
++++ b/pihole
+@@ -15,7 +15,7 @@ readonly PI_HOLE_SCRIPT_DIR="/opt/pihole"
+ # they might get set again when the installer is sourced. This causes an
+ # error due to modifying a readonly variable.
+ setupVars="/etc/pihole/setupVars.conf"
+-PI_HOLE_BIN_DIR="/usr/local/bin"
++PI_HOLE_BIN_DIR="/usr/bin"
+ 
+ readonly colfile="${PI_HOLE_SCRIPT_DIR}/COL_TABLE"
+ source "${colfile}"
+@@ -70,25 +70,6 @@ arpFunc() {
+   exit 0
+ }
+ 
+-updatePiholeFunc() {
+-  if [ -n "${DOCKER_VERSION}" ]; then
+-    unsupportedFunc
+-  else
+-    shift
+-    "${PI_HOLE_SCRIPT_DIR}"/update.sh "$@"
+-    exit 0
+-  fi
+-}
+-
+-reconfigurePiholeFunc() {
+-  if [ -n "${DOCKER_VERSION}" ]; then
+-    unsupportedFunc
+-  else
+-    /etc/.pihole/automated\ install/basic-install.sh --reconfigure
+-    exit 0;
+-  fi
+-}
+-
+ updateGravityFunc() {
+   exec "${PI_HOLE_SCRIPT_DIR}"/gravity.sh "$@"
+ }
+@@ -106,14 +87,6 @@ chronometerFunc() {
+ }
+ 
+ 
+-uninstallFunc() {
+-  if [ -n "${DOCKER_VERSION}" ]; then
+-    unsupportedFunc
+-  else
+-    "${PI_HOLE_SCRIPT_DIR}"/uninstall.sh
+-    exit 0
+-  fi
+-}
+ 
+ versionFunc() {
+   shift
+@@ -261,9 +234,9 @@ Example: 'pihole logging on'
+ Specify whether the Pi-hole log should be used
+ 
+ Options:
+-  on                  Enable the Pi-hole log at /var/log/pihole/pihole.log
+-  off                 Disable and flush the Pi-hole log at /var/log/pihole/pihole.log
+-  off noflush         Disable the Pi-hole log at /var/log/pihole/pihole.log"
++  on                  Enable the Pi-hole log at /var/log/pihole.log
++  off                 Disable and flush the Pi-hole log at /var/log/pihole.log
++  off noflush         Disable the Pi-hole log at /var/log/pihole.log"
+     exit 0
+   elif [[ "${1}" == "off" ]]; then
+     # Disable logging
+@@ -392,7 +365,7 @@ tailFunc() {
+   # Color blocklist/blacklist/wildcard entries as red
+   # Color A/AAAA/DHCP strings as white
+   # Color everything else as gray
+-  tail -f /var/log/pihole/pihole.log | grep --line-buffered "${1}" | sed -E \
++  tail -f /var/log/pihole.log | grep --line-buffered "${1}" | sed -E \
+     -e "s,($(date +'%b %d ')| dnsmasq\[[0-9]*\]),,g" \
+     -e "s,(.*(blacklisted |gravity blocked ).*),${COL_RED}&${COL_NC}," \
+     -e "s,.*(query\\[A|DHCP).*,${COL_NC}&${COL_NC}," \
+@@ -400,50 +373,6 @@ tailFunc() {
+   exit 0
+ }
+ 
+-piholeCheckoutFunc() {
+-  if [[ "$2" == "-h" ]] || [[ "$2" == "--help" ]]; then
+-    echo "Usage: pihole checkout [repo] [branch]
+-Example: 'pihole checkout master' or 'pihole checkout core dev'
+-Switch Pi-hole subsystems to a different GitHub branch
+-
+-Repositories:
+-  core [branch]       Change the branch of Pi-hole's core subsystem
+-  web [branch]        Change the branch of Web Interface subsystem
+-  ftl [branch]        Change the branch of Pi-hole's FTL subsystem
+-
+-Branches:
+-  master              Update subsystems to the latest stable release
+-  dev                 Update subsystems to the latest development release
+-  branchname          Update subsystems to the specified branchname"
+-    exit 0
+-  fi
+-
+-  source "${PI_HOLE_SCRIPT_DIR}"/piholeCheckout.sh
+-  shift
+-  checkout "$@"
+-}
+-
+-tricorderFunc() {
+-  local tricorder_token
+-  if [[ ! -p "/dev/stdin" ]]; then
+-    echo -e "  ${INFO} Please do not call Tricorder directly"
+-    exit 1
+-  fi
+-
+-  tricorder_token=$(curl --silent --fail --show-error --upload-file "-" https://tricorder.pi-hole.net/upload < /dev/stdin 2>&1)
+-  if [[ "${tricorder_token}" != "https://tricorder.pi-hole.net/"* ]]; then
+-      echo -e "${CROSS} uploading failed, contact Pi-hole support for assistance."
+-      # Log curl error (if available)
+-      if [ -n "${tricorder_token}" ]; then
+-          echo -e "${INFO} Error message: ${COL_RED}${tricorder_token}${COL_NC}\\n"
+-          tricorder_token=""
+-      fi
+-      exit 1
+-  fi
+-  echo "Upload successful, your token is: ${COL_GREEN}${tricorder_token}${COL_NC}"
+-  exit 0
+-}
+-
+ updateCheckFunc() {
+   "${PI_HOLE_SCRIPT_DIR}"/updatecheck.sh "$@"
+   exit 0
+@@ -473,7 +402,6 @@ Debugging Options:
+                         Add '-c' or '--check-database' to include a Pi-hole database integrity check
+                         Add '-a' to automatically upload the log to tricorder.pi-hole.net
+   -f, flush           Flush the Pi-hole log
+-  -r, reconfigure     Reconfigure or Repair Pi-hole subsystems
+   -t, tail [arg]      View the live output of the Pi-hole log.
+                       Add an optional argument to filter the log
+                       (regular expressions are supported)
+@@ -490,11 +418,8 @@ Options:
+                         Add '-h' for more info on logging usage
+   -q, query           Query the adlists for a specified domain
+                         Add '-h' for more info on query usage
+-  -up, updatePihole   Update Pi-hole subsystems
+-                        Add '--check-only' to exit script before update is performed.
+   -v, version         Show installed versions of Pi-hole, Web Interface & FTL
+                         Add '-h' for more info on version usage
+-  uninstall           Uninstall Pi-hole from your system
+   status              Display the running status of Pi-hole subsystems
+   enable              Enable Pi-hole subsystems
+   disable             Disable Pi-hole subsystems
+@@ -502,8 +427,6 @@ Options:
+   restartdns          Full restart Pi-hole subsystems
+                         Add 'reload' to update the lists and flush the cache without restarting the DNS server
+                         Add 'reload-lists' to only update the lists WITHOUT flushing the cache or restarting the DNS server
+-  checkout            Switch Pi-hole subsystems to a different GitHub branch
+-                        Add '-h' for more info on checkout usage
+   arpflush            Flush information stored in Pi-hole's network tables";
+   exit 0
+ }
+@@ -520,8 +443,6 @@ case "${1}" in
+   "-q" | "query"                ) queryFunc "$@";;
+   "status"                      ) statusFunc "$2";;
+ 
+-  "tricorder"                   ) tricorderFunc;;
+-
+   # we need to add all arguments that require sudo power to not trigger the * argument
+   "-w" | "whitelist"            ) ;;
+   "-b" | "blacklist"            ) ;;
+@@ -530,17 +451,13 @@ case "${1}" in
+   "--white-regex" | "white-regex" ) ;;
+   "--white-wild" | "white-wild"   ) ;;
+   "-f" | "flush"                ) ;;
+-  "-up" | "updatePihole"        ) ;;
+-  "-r"  | "reconfigure"         ) ;;
+   "-g" | "updateGravity"        ) ;;
+   "-l" | "logging"              ) ;;
+-  "uninstall"                   ) ;;
+   "enable"                      ) ;;
+   "disable"                     ) ;;
+   "-d" | "debug"                ) ;;
+   "restartdns"                  ) ;;
+   "-a" | "admin"                ) ;;
+-  "checkout"                    ) ;;
+   "updatechecker"               ) ;;
+   "arpflush"                    ) ;;
+   "-t" | "tail"                 ) ;;
