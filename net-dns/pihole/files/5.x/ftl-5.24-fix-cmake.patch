@@ -1,0 +1,11 @@
+diff --git a/src/lua/scripts/CMakeLists.txt b/src/lua/scripts/CMakeLists.txt
+index 1278f8f..419b3b5 100644
+--- a/src/lua/scripts/CMakeLists.txt
++++ b/src/lua/scripts/CMakeLists.txt
+@@ -31,5 +31,6 @@ endforeach()
+ add_dependencies(lua lua_scripts)
+ 
+ add_library(lua_scripts OBJECT ${sources})
++set_target_properties(lua_scripts PROPERTIES LINKER_LANGUAGE C)
+ target_compile_options(lua_scripts PRIVATE ${EXTRAWARN})
+ target_include_directories(lua_scripts PRIVATE ${PROJECT_SOURCE_DIR}/src)

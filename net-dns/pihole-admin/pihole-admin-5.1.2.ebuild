@@ -15,6 +15,7 @@ IUSE="sudo doas"
 
 RDEPEND="
     >=net-dns/pihole-${PV}
+    <net-dns/pihole-5.3
     app-shells/bash
     sudo? ( app-admin/sudo )
     doas? ( app-admin/doas )
