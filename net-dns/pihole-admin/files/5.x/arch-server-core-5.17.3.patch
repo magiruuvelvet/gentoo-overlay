@@ -1,3 +1,16 @@
+diff --git a/advanced/Scripts/database_migration/gravity-db.sh b/advanced/Scripts/database_migration/gravity-db.sh
+index 1459ecd..5eae428 100755
+--- a/advanced/Scripts/database_migration/gravity-db.sh
++++ b/advanced/Scripts/database_migration/gravity-db.sh
+@@ -10,7 +10,7 @@
+ # This file is copyright under the latest version of the EUPL.
+ # Please see LICENSE file for your rights under this license.
+ 
+-readonly scriptPath="/etc/.pihole/advanced/Scripts/database_migration/gravity"
++readonly scriptPath="/opt/pihole/database_migration/gravity"
+ 
+ upgrade_gravityDB(){
+ 	local database piholeDir auditFile version
 diff --git a/advanced/Scripts/pihole-reenable.sh b/advanced/Scripts/pihole-reenable.sh
 index 93ec3b9..b755028 100755
 --- a/advanced/Scripts/pihole-reenable.sh
@@ -108,7 +121,7 @@ index 4aa5a8b..9c45eb6 100644
  #conf-dir=/etc/dnsmasq.d/*.conf
 +conf-dir=/etc/dnsmasq.d/,*.conf
 diff --git a/gravity.sh b/gravity.sh
-index 62631e3..ad96826 100755
+index 62631e3..b89a5ee 100755
 --- a/gravity.sh
 +++ b/gravity.sh
 @@ -16,10 +16,10 @@ export LC_ALL=C
@@ -124,7 +137,12 @@ index 62631e3..ad96826 100755
  
  piholeDir="/etc/${basename}"
  
-@@ -36,8 +36,8 @@ piholeGitDir="/etc/.pihole"
+@@ -32,12 +32,12 @@ adListFile="${piholeDir}/adlists.list"
+ localList="${piholeDir}/local.list"
+ VPNList="/etc/openvpn/ipp.txt"
+ 
+-piholeGitDir="/etc/.pihole"
++piholeGitDir="/opt/pihole"
  gravityDBfile_default="${piholeDir}/gravity.db"
  # GRAVITYDB may be overwritten by source pihole-FTL.conf below
  GRAVITYDB="${gravityDBfile_default}"

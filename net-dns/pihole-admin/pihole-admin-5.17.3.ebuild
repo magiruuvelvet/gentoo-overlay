@@ -2,8 +2,6 @@
 
 EAPI=8
 
-inherit tmpfiles
-
 PV_ADMINLTE=5.21
 
 SRC_URI="
@@ -78,6 +76,7 @@ src_install() {
     install -Dm755 advanced/Scripts/query.sh "${D}"/opt/pihole/query.sh
     install -Dm755 advanced/Scripts/pihole-reenable.sh "${D}"/opt/pihole/pihole-reenable.sh
     install -Dm755 advanced/Scripts/piholeARPTable.sh "${D}"/opt/pihole/piholeARPTable.sh
+    install -Dm755 advanced/Scripts/utils.sh "${D}"/opt/pihole/utils.sh
 
     install -Dm644 advanced/Scripts/COL_TABLE "${D}"/opt/pihole/COL_TABLE
 
@@ -122,8 +121,4 @@ EOF
     cd "${S}/../web-${PV_ADMINLTE}"
     install -dm755 "${D}"/srv/http/pihole/admin
     cp -dpr --no-preserve=ownership * "${D}"/srv/http/pihole/admin/
-}
-
-pkg_postinst() {
-    tmpfiles_process
 }
