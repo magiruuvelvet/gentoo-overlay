@@ -1,8 +1,8 @@
 # based on https://aur.archlinux.org/pi-hole-ftl.git
 
-EAPI=7
+EAPI=8
 
-inherit eutils cmake
+inherit cmake
 
 SRC_URI="https://github.com/pi-hole/FTL/archive/v${PV}.tar.gz -> pihole-${PV}.tar.gz"
 

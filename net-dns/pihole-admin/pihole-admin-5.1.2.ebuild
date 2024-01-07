@@ -1,8 +1,6 @@
 # based on https://aur.archlinux.org/pi-hole-server.git
 
-EAPI=7
-
-inherit eutils
+EAPI=8
 
 PV_ADMINLTE=5.1.1
 
