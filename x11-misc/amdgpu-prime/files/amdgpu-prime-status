@@ -3,11 +3,19 @@
 # Script to check if the AMD dGPU is currently being used.
 #========================================================================================
 
+# NOTE: change this to your devices accordingly (use amdgpu_top for easy identification)
+dGPU_DEV="/dev/dri/renderD128"
+iGPU_DEV="/dev/dri/renderD129"
+
 # check if any process has the DRI_PRIME variable set
 RES_OFFLOAD="$(cat -v /proc/**/environ 2>/dev/null | grep DRI_PRIME)"
 RES_OFFLOAD=$?
 
-if [[ "$RES_OFFLOAD" == 0 ]]; then
+# check if any process is currently using the DRM device of the dGPU
+RES_DRM_dGPU="$(lsof "$dGPU_DEV" 2>/dev/null)"
+RES_DRM_dGPU=$?
+
+if [[ "$RES_OFFLOAD" == 0 || "$RES_DRM_dGPU" == 0 ]]; then
     # AMD dGPU is currently in use
     echo 1
     exit 1
