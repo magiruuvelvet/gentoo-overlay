@@ -1,0 +1,21 @@
+#!/bin/sh
+#========================================================================================
+# Script to check if the AMD dGPU is currently being used.
+#========================================================================================
+
+# check if any process has the DRI_PRIME variable set
+RES_OFFLOAD="$(cat -v /proc/**/environ 2>/dev/null | grep DRI_PRIME)"
+RES_OFFLOAD=$?
+
+if [[ "$RES_OFFLOAD" == 0 ]]; then
+    # AMD dGPU is currently in use
+    echo 1
+    exit 1
+else
+    # AMD dGPU is currently not used
+    echo 0
+    exit 0
+fi
+
+# this should never happen
+exit 0
