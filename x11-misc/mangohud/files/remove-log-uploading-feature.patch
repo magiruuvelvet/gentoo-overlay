@@ -1,20 +1,19 @@
 diff --git a/src/keybinds.cpp b/src/keybinds.cpp
-index 12e73e5..c8bf50f 100644
+index 395eb55..336e88a 100644
 --- a/src/keybinds.cpp
 +++ b/src/keybinds.cpp
-@@ -10,7 +10,6 @@ void check_keybinds(struct overlay_params& params, uint32_t vendorID){
-    auto elapsedFpsLimitToggle = now - toggle_fps_limit_press;
+@@ -13,7 +13,6 @@ void check_keybinds(struct overlay_params& params, uint32_t vendorID){
+    auto elapsedPresetToggle = now - toggle_preset_press;
     auto elapsedF12 = now - last_f12_press;
     auto elapsedReloadCfg = now - reload_cfg_press;
 -   auto elapsedUpload = now - last_upload_press;
  
     static Clock::time_point last_check;
     if (now - last_check < 100ms)
-@@ -61,16 +60,4 @@ void check_keybinds(struct overlay_params& params, uint32_t vendorID){
-       _params = &params;
+@@ -78,18 +77,6 @@ void check_keybinds(struct overlay_params& params, uint32_t vendorID){
        reload_cfg_press = now;
     }
--
+ 
 -   if (params.permit_upload && elapsedUpload >= keyPressDelay &&
 -       keys_are_pressed(params.upload_log)) {
 -      last_upload_press = now;
@@ -26,51 +25,56 @@ index 12e73e5..c8bf50f 100644
 -      last_upload_press = now;
 -      logger->upload_last_logs();
 -   }
- }
+-
+    if (elapsedF12 >= keyPressDelay &&
+        keys_are_pressed(params.toggle_hud_position)) {
+       next_hud_position(params);
 diff --git a/src/keybinds.h b/src/keybinds.h
-index 83dff61..bb99030 100644
+index e48aafa..61cb2da 100644
 --- a/src/keybinds.h
 +++ b/src/keybinds.h
 @@ -11,7 +11,7 @@
  typedef unsigned long KeySym;
  #endif
  
--Clock::time_point last_f2_press, toggle_fps_limit_press , last_f12_press, reload_cfg_press, last_upload_press;
-+Clock::time_point last_f2_press, toggle_fps_limit_press , last_f12_press, reload_cfg_press;
+-Clock::time_point last_f2_press, toggle_fps_limit_press, toggle_preset_press, last_f12_press, reload_cfg_press, last_upload_press;
++Clock::time_point last_f2_press, toggle_fps_limit_press, toggle_preset_press, last_f12_press, reload_cfg_press;
  
  #if defined(HAVE_X11)
- bool keys_are_pressed(const std::vector<KeySym>& keys) {
+ static inline bool keys_are_pressed(const std::vector<KeySym>& keys) {
 diff --git a/src/logging.cpp b/src/logging.cpp
-index 7126803..464a55f 100644
+index ca33ee3..a24491a 100644
 --- a/src/logging.cpp
 +++ b/src/logging.cpp
-@@ -34,25 +34,6 @@ string exec(string command) {
+@@ -36,27 +36,6 @@ string exec(string command) {
      return result;
  }
  
--void upload_file(std::string logFile){
+-static void upload_file(std::string logFile){
 -  std::string command = "curl --include --request POST https://flightlessmango.com/logs -F 'log[game_id]=26506' -F 'log[user_id]=176' -F 'attachment=true' -A 'mangohud' ";
 -  command += " -F 'log[uploads][]=@" + logFile + "'";
 -
 -  command += " | grep Location | cut -c11-";
 -  std::string url = exec(command);
+-  std::cout << "upload url: " << url;
 -  exec("xdg-open " + url);
 -}
 -
--void upload_files(const std::vector<std::string>& logFiles){
+-static void upload_files(const std::vector<std::string>& logFiles){
 -  std::string command = "curl --include --request POST https://flightlessmango.com/logs -F 'log[game_id]=26506' -F 'log[user_id]=176' -F 'attachment=true' -A 'mangohud' ";
 -  for (auto& file : logFiles)
 -    command += " -F 'log[uploads][]=@" + file + "'";
 -
 -  command += " | grep Location | cut -c11-";
 -  std::string url = exec(command);
+-  std::cout << "upload url: " << url;
 -  exec("xdg-open " + url);
 -}
 -
- bool compareByFps(const logData &a, const logData &b)
+ static bool compareByFps(const logData &a, const logData &b)
  {
      return a.fps < b.fps;
-@@ -242,21 +223,6 @@ void Logger::notify_data_valid() {
+@@ -251,22 +230,6 @@ void Logger::notify_data_valid() {
    m_values_valid_cv.notify_all();
  }
  
@@ -85,7 +89,8 @@ index 7126803..464a55f 100644
 -}
 -
 -void autostart_log(int sleep) {
--  os_time_sleep(sleep * 1000000);
+-  // os_time_sleep() causes freezes with zink + autologging :frog_donut:
+-  this_thread::sleep_for(chrono::seconds(sleep));
 -  logger->start_logging();
 -}
 -
@@ -93,19 +98,19 @@ index 7126803..464a55f 100644
    vector<float> sorted {};
    for (auto& point : m_log_array)
 diff --git a/src/logging.h b/src/logging.h
-index 15edc75..2246f5e 100644
+index 309cdb7..30227ef 100644
 --- a/src/logging.h
 +++ b/src/logging.h
-@@ -50,8 +50,6 @@ public:
-   const std::vector<logData>& get_log_data() const noexcept { return m_log_array; }
-   void clear_log_data() noexcept { m_log_array.clear(); }
+@@ -54,8 +54,6 @@ public:
+ 
+   void writeToFile();
  
 -  void upload_last_log();
 -  void upload_last_logs();
    void calculate_benchmark_data();
-   const std::string output_folder;
+   std::string output_folder;
    const int64_t log_interval;
-@@ -78,6 +76,5 @@ extern uint64_t frametime;
+@@ -83,6 +81,5 @@ extern float frametime;
  extern logData currentLogData;
  
  std::string exec(std::string command);
@@ -113,40 +118,55 @@ index 15edc75..2246f5e 100644
  
  #endif //MANGOHUD_LOGGING_H
 diff --git a/src/overlay.cpp b/src/overlay.cpp
-index 9581a21..cf87b0d 100644
+index cec8b6c..eb1d3e4 100644
 --- a/src/overlay.cpp
 +++ b/src/overlay.cpp
-@@ -784,8 +784,6 @@ void init_gpu_stats(uint32_t& vendorID, uint32_t reported_deviceID, overlay_para
+@@ -278,13 +278,6 @@ void update_hud_info_with_frametime(struct swapchain_stats& sw_stats, const stru
+          sw_stats.time = time.str();
+       }
+ 
+-      if (params.autostart_log && logger && !logger->autostart_init) {
+-         if ((std::chrono::steady_clock::now() - HUDElements.overlay_start) > std::chrono::seconds(params.autostart_log)){
+-            logger->start_logging();
+-            logger->autostart_init = true;
+-         }
+-      }
+-
+       sw_stats.n_frames_since_update = 0;
+       sw_stats.last_fps_update = now;
+ 
+@@ -961,8 +954,6 @@ void init_gpu_stats(uint32_t& vendorID, uint32_t reported_deviceID, overlay_para
        }
     }
  #endif
 -   if (!params.permit_upload)
--      SPDLOG_INFO("Uploading is disabled (permit_upload = 0)");
+-      SPDLOG_DEBUG("Uploading is disabled (permit_upload = 0)");
  }
  
  void init_system_info(){
 diff --git a/src/overlay_params.cpp b/src/overlay_params.cpp
-index 68694a6..9de440e 100644
+index 8dcc24d..ccfe8d9 100644
 --- a/src/overlay_params.cpp
 +++ b/src/overlay_params.cpp
-@@ -147,16 +147,12 @@ parse_string_to_keysym_vec(const char *str)
- #define parse_toggle_hud         parse_string_to_keysym_vec
- #define parse_toggle_logging     parse_string_to_keysym_vec
- #define parse_reload_cfg         parse_string_to_keysym_vec
--#define parse_upload_log         parse_string_to_keysym_vec
--#define parse_upload_logs        parse_string_to_keysym_vec
- #define parse_toggle_fps_limit   parse_string_to_keysym_vec
- 
- #else
- #define parse_toggle_hud(x)      {}
- #define parse_toggle_logging(x)  {}
- #define parse_reload_cfg(x)      {}
--#define parse_upload_log(x)      {}
--#define parse_upload_logs(x)     {}
- #define parse_toggle_fps_limit(x)    {}
- #endif
- 
-@@ -400,11 +396,9 @@ parse_gl_size_query(const char *str)
+@@ -152,8 +152,6 @@ parse_string_to_keysym_vec(const char *str)
+ #define parse_toggle_hud_position   parse_string_to_keysym_vec
+ #define parse_toggle_logging        parse_string_to_keysym_vec
+ #define parse_reload_cfg            parse_string_to_keysym_vec
+-#define parse_upload_log            parse_string_to_keysym_vec
+-#define parse_upload_logs           parse_string_to_keysym_vec
+ #define parse_toggle_fps_limit      parse_string_to_keysym_vec
+ #define parse_toggle_preset         parse_string_to_keysym_vec
+ #define parse_reset_fps_metrics     parse_string_to_keysym_vec
+@@ -163,8 +161,6 @@ parse_string_to_keysym_vec(const char *str)
+ #define parse_toggle_hud_position(x)   {}
+ #define parse_toggle_logging(x)        {}
+ #define parse_reload_cfg(x)            {}
+-#define parse_upload_log(x)            {}
+-#define parse_upload_logs(x)           {}
+ #define parse_toggle_fps_limit(x)      {}
+ #define parse_toggle_preset(x)         {}
+ #define parse_reset_fps_metrics(x)     {}
+@@ -459,11 +455,9 @@ parse_fps_metrics(const char *str){
  #define parse_font_scale(s) parse_float(s)
  #define parse_background_alpha(s) parse_float(s)
  #define parse_alpha(s) parse_float(s)
@@ -158,15 +178,15 @@ index 68694a6..9de440e 100644
  #define parse_gl_bind_framebuffer(s) parse_unsigned(s)
  #define parse_gl_dont_flip(s) parse_unsigned(s) != 0
  #define parse_round_corners(s) parse_unsigned(s)
-@@ -623,7 +617,6 @@ parse_overlay_config(struct overlay_params *params,
+@@ -705,7 +699,6 @@ static void set_param_defaults(struct overlay_params *params){
     params->font_scale_media_player = 0.55f;
-    params->log_interval = 100;
+    params->log_interval = 0;
     params->media_player_format = { "{title}", "{artist}", "{album}" };
 -   params->permit_upload = 0;
     params->benchmark_percentiles = { "97", "AVG"};
     params->gpu_load_value = { 60, 90 };
     params->cpu_load_value = { 60, 90 };
-@@ -639,8 +632,6 @@ parse_overlay_config(struct overlay_params *params,
+@@ -741,8 +734,6 @@ parse_overlay_config(struct overlay_params *params,
     params->toggle_fps_limit = { XK_Shift_L, XK_F1 };
     params->toggle_logging = { XK_Shift_L, XK_F2 };
     params->reload_cfg = { XK_Shift_L, XK_F4 };
@@ -175,29 +195,20 @@ index 68694a6..9de440e 100644
  #endif
  
  #ifdef _WIN32
-@@ -846,8 +837,6 @@ parse_overlay_config(struct overlay_params *params,
-       logger->stop_logging();
-    }
-    logger = std::make_unique<Logger>(params);
--   if(params->autostart_log && !logger->is_active())
--      std::thread(autostart_log, params->autostart_log).detach();
- #ifdef MANGOAPP
-    {
-       extern bool new_frame;
 diff --git a/src/overlay_params.h b/src/overlay_params.h
-index b44aff8..5fb66cb 100644
+index 1a25edb..28c6e53 100644
 --- a/src/overlay_params.h
 +++ b/src/overlay_params.h
-@@ -114,8 +114,6 @@ typedef unsigned long KeySym;
-    OVERLAY_PARAM_CUSTOM(toggle_fps_limit)            \
+@@ -142,8 +142,6 @@ typedef unsigned long KeySym;
     OVERLAY_PARAM_CUSTOM(toggle_logging)              \
+    OVERLAY_PARAM_CUSTOM(reset_fps_metrics)           \
     OVERLAY_PARAM_CUSTOM(reload_cfg)                  \
 -   OVERLAY_PARAM_CUSTOM(upload_log)                  \
 -   OVERLAY_PARAM_CUSTOM(upload_logs)                 \
     OVERLAY_PARAM_CUSTOM(offset_x)                    \
     OVERLAY_PARAM_CUSTOM(offset_y)                    \
     OVERLAY_PARAM_CUSTOM(background_alpha)            \
-@@ -142,7 +140,6 @@ typedef unsigned long KeySym;
+@@ -170,7 +168,6 @@ typedef unsigned long KeySym;
     OVERLAY_PARAM_CUSTOM(cpu_text)                    \
     OVERLAY_PARAM_CUSTOM(gpu_text)                    \
     OVERLAY_PARAM_CUSTOM(log_interval)                \
@@ -205,7 +216,7 @@ index b44aff8..5fb66cb 100644
     OVERLAY_PARAM_CUSTOM(benchmark_percentiles)       \
     OVERLAY_PARAM_CUSTOM(help)                        \
     OVERLAY_PARAM_CUSTOM(gpu_load_value)              \
-@@ -154,7 +151,6 @@ typedef unsigned long KeySym;
+@@ -182,7 +179,6 @@ typedef unsigned long KeySym;
     OVERLAY_PARAM_CUSTOM(cellpadding_y)               \
     OVERLAY_PARAM_CUSTOM(table_columns)               \
     OVERLAY_PARAM_CUSTOM(blacklist)                   \
@@ -213,22 +224,24 @@ index b44aff8..5fb66cb 100644
     OVERLAY_PARAM_CUSTOM(round_corners)               \
     OVERLAY_PARAM_CUSTOM(fsr_steam_sharpness)         \
     OVERLAY_PARAM_CUSTOM(fcat_screen_edge)            \
-@@ -241,14 +237,11 @@ struct overlay_params {
+@@ -286,8 +282,6 @@ struct overlay_params {
     std::vector<KeySym> toggle_fps_limit;
     std::vector<KeySym> toggle_logging;
     std::vector<KeySym> reload_cfg;
 -   std::vector<KeySym> upload_log;
 -   std::vector<KeySym> upload_logs;
+    std::vector<KeySym> toggle_hud_position;
+    std::vector<KeySym> reset_fps_metrics;
     std::string time_format, output_folder, output_file;
-    std::string pci_dev;
+@@ -295,7 +289,6 @@ struct overlay_params {
     std::string media_player_name;
-    std::string cpu_text, gpu_text;
+    std::string cpu_text, gpu_text, fps_text;
     std::vector<std::string> blacklist;
 -   unsigned autostart_log;
     std::vector<std::string> media_player_format;
     std::vector<std::string> benchmark_percentiles;
     std::string font_file, font_file_text;
-@@ -257,7 +250,6 @@ struct overlay_params {
+@@ -304,7 +297,6 @@ struct overlay_params {
     std::string custom_text;
     std::string config_file_path;
     std::unordered_map<std::string,std::string> options;
@@ -237,7 +250,7 @@ index b44aff8..5fb66cb 100644
     unsigned short fcat_screen_edge;
     unsigned short fcat_overlay_width;
 diff --git a/src/vulkan.cpp b/src/vulkan.cpp
-index 0ed058a..184e917 100644
+index dd14545..e976f33 100644
 --- a/src/vulkan.cpp
 +++ b/src/vulkan.cpp
 @@ -24,6 +24,8 @@

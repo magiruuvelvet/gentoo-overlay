@@ -10,19 +10,22 @@ KEYWORDS="amd64 x86"
 
 EGIT_REPO_URI="${HOMEPAGE}"
 
-IMGUI_VERSION=1.81
-SPDLOG_VERSION=1.8.5
+IMGUI_VERSION=1.89.9
+VULKAN_HEADERS_VERSION=1.2.158
+IMPLOT_VERSION=0.16
 
 SRC_URI="
     https://github.com/ocornut/imgui/archive/v${IMGUI_VERSION}.tar.gz -> ${PN}-imgui-${IMGUI_VERSION}.tgz
     https://wrapdb.mesonbuild.com/v2/imgui_${IMGUI_VERSION}-1/get_patch -> ${PN}-imgui-${IMGUI_VERSION}-meson.zip
 
-    https://github.com/gabime/spdlog/archive/v${SPDLOG_VERSION}.tar.gz -> ${PN}-spdlog-${SPDLOG_VERSION}.tgz
-    https://wrapdb.mesonbuild.com/v2/spdlog_${SPDLOG_VERSION}-1/get_patch -> ${PN}-spdlog-${SPDLOG_VERSION}-meson.zip
+    https://github.com/KhronosGroup/Vulkan-Headers/archive/v${VULKAN_HEADERS_VERSION}.tar.gz -> ${PN}-vulkan-headers-${VULKAN_HEADERS_VERSION}.tgz
+    https://wrapdb.mesonbuild.com/v2/vulkan-headers_${VULKAN_HEADERS_VERSION}-2/get_patch -> ${PN}-vulkan-headers-${VULKAN_HEADERS_VERSION}-meson.zip
+
+    https://github.com/epezent/implot/archive/refs/tags/v${IMPLOT_VERSION}.zip -> ${PN}-implot-${IMPLOT_VERSION}.zip
+    https://wrapdb.mesonbuild.com/v2/implot_0.16-1/get_patch -> ${PN}-implot-${IMPLOT_VERSION}-meson.zip
 "
 
 BDEPEND="
-    dev-util/vulkan-headers
     virtual/pkgconfig
     app-arch/libarchive
 "
@@ -34,11 +37,15 @@ RDEPEND="
     x11-libs/libX11[${MULTILIB_USEDEP}]
 "
 
-DEPEND="${RDEPEND}"
+DEPEND="
+    dev-libs/spdlog
+    ${RDEPEND}
+"
 
 PATCHES="
     ${FILESDIR}/disable-config-lookup-in-exe-path.patch
     ${FILESDIR}/remove-log-uploading-feature.patch
+    ${FILESDIR}/include-missing-headers.patch
 "
 
 src_prepare() {
@@ -46,9 +53,13 @@ src_prepare() {
     bsdtar -C "${S}/subprojects/" -xf "${DISTDIR}/${PN}-imgui-${IMGUI_VERSION}.tgz"
     bsdtar -C "${S}/subprojects/" -xf "${DISTDIR}/${PN}-imgui-${IMGUI_VERSION}-meson.zip"
 
-    einfo "Unpacking meson subproject: spdlog-${SPDLOG_VERSION}"
-    bsdtar -C "${S}/subprojects/" -xf "${DISTDIR}/${PN}-spdlog-${SPDLOG_VERSION}.tgz"
-    bsdtar -C "${S}/subprojects/" -xf "${DISTDIR}/${PN}-spdlog-${SPDLOG_VERSION}-meson.zip"
+    einfo "Unpacking meson subproject: vulkan-headers-${VULKAN_HEADERS_VERSION}"
+    bsdtar -C "${S}/subprojects/" -xf "${DISTDIR}/${PN}-vulkan-headers-${VULKAN_HEADERS_VERSION}.tgz"
+    bsdtar -C "${S}/subprojects/" -xf "${DISTDIR}/${PN}-vulkan-headers-${VULKAN_HEADERS_VERSION}-meson.zip"
+
+    einfo "Unpacking meson subproject: implot-${IMPLOT_VERSION}"
+    bsdtar -C "${S}/subprojects/" -xf "${DISTDIR}/${PN}-implot-${IMPLOT_VERSION}.zip"
+    bsdtar -C "${S}/subprojects/" -xf "${DISTDIR}/${PN}-implot-${IMPLOT_VERSION}-meson.zip"
 
     default
 }
@@ -58,9 +69,9 @@ multilib_src_configure() {
         --buildtype=release
         --prefix /usr
         -Dappend_libdir_mangohud=false
-        -Duse_system_vulkan=enabled
-        -Duse_system_spdlog=disabled
+        -Duse_system_spdlog=enabled
         -Dwith_xnvctrl=disabled
+        -Dwith_x11=enabled
     )
 
     meson_src_configure
