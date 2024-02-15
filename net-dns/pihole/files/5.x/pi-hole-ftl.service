@@ -8,6 +8,8 @@ ExecStart=/usr/bin/pihole-FTL no-daemon
 #ExecReload=/bin/kill -USR1 $MAINPID
 Restart=on-failure
 CPUSchedulingPolicy=other
+LimitRTTIME=infinity
+SendSIGKILL=no
 
 [Install]
 WantedBy=multi-user.target
