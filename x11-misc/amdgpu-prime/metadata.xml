@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+    <use>
+        <flag name="compat">Install compatibility symlinks for x11-misc/bumblebee and x11-misc/primus</flag>
+        <flag name="reverse-gpu-layout">The dGPU is the default GPU, while the PRIME Render Offloading GPU is the iGPU. (reversed GPU layout in UEFI settings)</flag>
+    </use>
+</pkgmetadata>
