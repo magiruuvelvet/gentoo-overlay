@@ -82,11 +82,16 @@ src_configure() {
     cmake_src_configure
 }
 
-# src_install() {
-#     cmake_src_install
-# 
+src_install() {
+    cmake_src_install
+
+    # install "smart" wrapper libraries
+    local smartlibdir="${ED}/usr/share/hyperhdr/lib"
+    mkdir -p "${smartlibdir}"
+    cp "${WORKDIR}/${P}_build/lib/libsmart"* "${smartlibdir}/"
+
 #     # install a better systemd unit which supports the --user flag
 #     local systemd_unit="${ED}/usr/share/hyperion/service/hyperion.systemd"
 #     rm "${systemd_unit}"
 #     cp "${FILESDIR}/hyperion.service" "${systemd_unit}"
-# }
+}
