@@ -1,0 +1,223 @@
+diff --git a/include/api/CallbackAPI.h b/include/api/CallbackAPI.h
+index 8342e5b..b82255b 100644
+--- a/include/api/CallbackAPI.h
++++ b/include/api/CallbackAPI.h
+@@ -12,9 +12,7 @@
+ #include <base/AccessManager.h>
+ #include <utils/LutCalibrator.h>
+ 
+-#ifdef ENABLE_BONJOUR
+-	#include <bonjour/DiscoveryWrapper.h>
+-#endif
++#include <bonjour/DiscoveryWrapper.h>
+ 
+ 
+ class HyperHdrInstance;
+diff --git a/include/bonjour/BonjourServiceRegister.h b/include/bonjour/BonjourServiceRegister.h
+index 3e8ff8e..80c5218 100644
+--- a/include/bonjour/BonjourServiceRegister.h
++++ b/include/bonjour/BonjourServiceRegister.h
+@@ -5,8 +5,6 @@
+ 	#include <QHash>
+ #endif
+ 
+-#include <bonjour/DiscoveryRecord.h>
+-
+ class BonjourServiceHelper;
+ 
+ class BonjourServiceRegister : public QObject
+@@ -14,7 +12,7 @@ class BonjourServiceRegister : public QObject
+ 	Q_OBJECT
+ 
+ public:
+-	BonjourServiceRegister(QObject* parent, DiscoveryRecord::Service type, int port);
++	BonjourServiceRegister(QObject* parent, int port);
+ 	~BonjourServiceRegister() override;
+ 
+ 	void registerService();
+@@ -25,7 +23,7 @@ public slots:
+ 		return _serviceRecord.port;
+ 	};
+ 
+-	void requestToScanHandler(DiscoveryRecord::Service type);
++	void requestToScanHandler();
+ 	void messageFromFriendHandler(bool isExists, QString mdnsString, QString serverName, int port);
+ 	void signalIpResolvedHandler(QString serverName, QString ip);
+ 	void onThreadExits();
+@@ -38,8 +36,6 @@ private:
+ 	void resolveIps();
+ 
+ 	BonjourServiceHelper* _helper;
+-	DiscoveryRecord		_serviceRecord;
+ 	QHash<QString, QString> _ips;
+-	DiscoveryRecord		_result;
+ 	int _retry;
+ };
+diff --git a/include/bonjour/DiscoveryRecord.h b/include/bonjour/DiscoveryRecord.h
+deleted file mode 100644
+index 3330303..0000000
+--- a/include/bonjour/DiscoveryRecord.h
++++ /dev/null
+@@ -1,62 +0,0 @@
+-#pragma once
+-
+-/* DiscoveryRecord.h
+-*
+-*  MIT License
+-*
+-*  Copyright (c) 2020-2024 awawa-dev
+-*
+-*  Project homesite: https://github.com/awawa-dev/HyperHDR
+-*
+-*  Permission is hereby granted, free of charge, to any person obtaining a copy
+-*  of this software and associated documentation files (the "Software"), to deal
+-*  in the Software without restriction, including without limitation the rights
+-*  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+-*  copies of the Software, and to permit persons to whom the Software is
+-*  furnished to do so, subject to the following conditions:
+-*
+-*  The above copyright notice and this permission notice shall be included in all
+-*  copies or substantial portions of the Software.
+-
+-*  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+-*  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+-*  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+-*  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+-*  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+-*  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+-*  SOFTWARE.
+- */
+-
+-#ifndef PCH_ENABLED
+-	#include <QMetaType>
+-	#include <QString>
+-#endif
+-
+-class DiscoveryRecord
+-{
+-public:
+-	enum Service { Unknown = 0, HyperHDR, WLED, PhilipsHue, Pico, ESP32_S2, ESP, SerialPort, REFRESH_ALL };
+-
+-	Service type;
+-	QString hostName;
+-	QString address;
+-	int     port;
+-	bool	isExists;
+-	unsigned int ttl;
+-
+-	DiscoveryRecord();
+-
+-	static const QString getmDnsHeader(Service service);
+-	static const QString getName(Service _type);
+-
+-	const QString getName() const;	
+-	void resetTTL();
+-	bool expired();
+-	
+-
+-	bool operator==(const DiscoveryRecord& other) const;
+-	bool operator!=(const DiscoveryRecord& other) const;
+-};
+-
+-Q_DECLARE_METATYPE(DiscoveryRecord)
+-
+diff --git a/include/bonjour/DiscoveryWrapper.h b/include/bonjour/DiscoveryWrapper.h
+index 44eba3b..b72bf1c 100644
+--- a/include/bonjour/DiscoveryWrapper.h
++++ b/include/bonjour/DiscoveryWrapper.h
+@@ -32,14 +32,25 @@
+ 	#include <QList>
+ #endif
+ 
++#ifdef ENABLE_BONJOUR
+ #include <bonjour/DiscoveryRecord.h>
+ #include <utils/Logger.h>
+ #include <leddevice/LedDevice.h>
++#endif
+ 
+ class DiscoveryWrapper : public QObject
+ {
+ 	Q_OBJECT
+ 
++public:
++	inline DiscoveryWrapper(QObject* parent = nullptr)
++		: QObject(parent)
++	{
++	}
++
++	~DiscoveryWrapper() = default;
++
++#ifdef ENABLE_BONJOUR
+ private:
+ 	Logger*		_log;
+ 	std::unique_ptr<LedDevice>	_serialDevice;
+@@ -67,4 +78,5 @@ private:
+ 
+ 	// contains all current active service sessions
+ 	QList<DiscoveryRecord> _hyperhdrSessions, _wledDevices, _hueDevices, _espDevices, _picoDevices, _esp32s2Devices;
++#endif
+ };
+diff --git a/include/utils/GlobalSignals.h b/include/utils/GlobalSignals.h
+index bd2a0b9..50ff4c3 100644
+--- a/include/utils/GlobalSignals.h
++++ b/include/utils/GlobalSignals.h
+@@ -36,7 +36,6 @@
+ #endif
+ 
+ #include <utils/PerformanceCounters.h>
+-#include <bonjour/DiscoveryRecord.h>
+ 
+ class HyperHdrManager;
+ class AccessManager;
+@@ -92,7 +91,7 @@ signals:
+ 
+ 	void SignalPerformanceStateChanged(bool enabled, hyperhdr::PerformanceReportType type, int id, QString name = "");
+ 
+-	void SignalDiscoveryRequestToScan(DiscoveryRecord::Service type);
++	void SignalDiscoveryRequestToScan();
+ 
+-	void SignalDiscoveryEvent(DiscoveryRecord message);	
++	void SignalDiscoveryEvent();	
+ };
+diff --git a/sources/CMakeLists.txt b/sources/CMakeLists.txt
+index d2c7790..5fec358 100644
+--- a/sources/CMakeLists.txt
++++ b/sources/CMakeLists.txt
+@@ -37,10 +37,6 @@ if (ENABLE_CEC)
+ 	add_subdirectory(cec)
+ endif()
+ 
+-if(ENABLE_BONJOUR)
+-	add_subdirectory(bonjour)
+-endif()
+-
+ if(ENABLE_MQTT)
+ 	add_subdirectory(mqtt)
+ endif()
+diff --git a/sources/hyperhdr/HyperHdrDaemon.h b/sources/hyperhdr/HyperHdrDaemon.h
+index 443bd0e..13b9097 100644
+--- a/sources/hyperhdr/HyperHdrDaemon.h
++++ b/sources/hyperhdr/HyperHdrDaemon.h
+@@ -63,11 +63,7 @@
+ 	typedef QObject macOsWrapper;
+ #endif
+ 
+-#ifdef ENABLE_BONJOUR
+ #include <bonjour/DiscoveryWrapper.h>
+-#else
+-	typedef QObject DiscoveryWrapper;
+-#endif
+ 
+ #ifdef ENABLE_CEC
+ 	#include <cec/WrapperCEC.h>
+diff --git a/sources/utils/DiscoveryRecord.cpp b/sources/utils/DiscoveryRecord.cpp
+new file mode 100644
+index 0000000..8fb59d3
+--- /dev/null
++++ b/sources/utils/DiscoveryRecord.cpp
+@@ -0,0 +1,5 @@
++class DiscoveryRecord
++{
++    DiscoveryRecord() = default;
++    ~DiscoveryRecord() = default;
++};

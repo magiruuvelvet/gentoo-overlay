@@ -1,0 +1,40 @@
+diff --git a/external/CMakeLists.txt b/external/CMakeLists.txt
+index f0acf6f..74e70f1 100644
+--- a/external/CMakeLists.txt
++++ b/external/CMakeLists.txt
+@@ -62,7 +62,7 @@ if (NOT USE_SYSTEM_FLATBUFFERS_LIBS OR CMAKE_CROSSCOMPILING)
+ 		endif()
+ 	endif()
+ 
+-	add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/flatbuffers)
++	add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/flatbuffers EXCLUDE_FROM_ALL)
+ 
+ 	set(FLATBUFFERS_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/flatbuffers/include")
+ 
+@@ -122,7 +122,7 @@ if (NOT USE_SYSTEM_MBEDTLS_LIBS)
+ 	set(USE_SHARED_MBEDTLS_LIBRARY OFF CACHE BOOL "Disable mbedTLS shared libraries")
+ 	set(USE_STATIC_MBEDTLS_LIBRARY ON CACHE BOOL "Enable mbedTLS static libraries")
+ 
+-	add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/mbedtls)	
++	add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/mbedtls EXCLUDE_FROM_ALL)	
+ 
+ 	set(MBEDTLS_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/external/mbedtls/include")
+ 	set(MBEDTLS_INCLUDE_DIR ${MBEDTLS_INCLUDE_DIR} PARENT_SCOPE)
+@@ -170,7 +170,7 @@ if ( ENABLE_MQTT )
+ 			set(qmqtt_SHARED OFF)
+ 		endif()
+ 
+-		add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/qmqtt)
++		add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/qmqtt EXCLUDE_FROM_ALL)
+ 	endif()
+ endif()
+ 
+@@ -183,7 +183,7 @@ if ( ENABLE_XZ )
+ 			string(REGEX REPLACE "(\/W[011123456789])" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+ 			message( STATUS "Disable warnings for xz library: ${CMAKE_CXX_FLAGS}")
+ 		endif()
+-		add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/xz)
++		add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/xz EXCLUDE_FROM_ALL)
+ 		if(MSVC)
+ 			set(CMAKE_CXX_FLAGS ${BACKUP_OF_CMAKE_CXX_FLAGS})
+ 			message( STATUS "Restoring compiling flags after xz: ${CMAKE_CXX_FLAGS}")			
