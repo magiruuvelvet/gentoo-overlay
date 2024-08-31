@@ -1,8 +1,8 @@
 diff --git a/src/keybinds.cpp b/src/keybinds.cpp
-index 395eb55..336e88a 100644
+index 84c0288..d06393d 100644
 --- a/src/keybinds.cpp
 +++ b/src/keybinds.cpp
-@@ -13,7 +13,6 @@ void check_keybinds(struct overlay_params& params, uint32_t vendorID){
+@@ -19,7 +19,6 @@ void check_keybinds(struct overlay_params& params, uint32_t vendorID){
     auto elapsedPresetToggle = now - toggle_preset_press;
     auto elapsedF12 = now - last_f12_press;
     auto elapsedReloadCfg = now - reload_cfg_press;
@@ -10,7 +10,7 @@ index 395eb55..336e88a 100644
  
     static Clock::time_point last_check;
     if (now - last_check < 100ms)
-@@ -78,18 +77,6 @@ void check_keybinds(struct overlay_params& params, uint32_t vendorID){
+@@ -84,18 +83,6 @@ void check_keybinds(struct overlay_params& params, uint32_t vendorID){
        reload_cfg_press = now;
     }
  
@@ -29,24 +29,11 @@ index 395eb55..336e88a 100644
     if (elapsedF12 >= keyPressDelay &&
         keys_are_pressed(params.toggle_hud_position)) {
        next_hud_position(params);
-diff --git a/src/keybinds.h b/src/keybinds.h
-index e48aafa..61cb2da 100644
---- a/src/keybinds.h
-+++ b/src/keybinds.h
-@@ -11,7 +11,7 @@
- typedef unsigned long KeySym;
- #endif
- 
--Clock::time_point last_f2_press, toggle_fps_limit_press, toggle_preset_press, last_f12_press, reload_cfg_press, last_upload_press;
-+Clock::time_point last_f2_press, toggle_fps_limit_press, toggle_preset_press, last_f12_press, reload_cfg_press;
- 
- #if defined(HAVE_X11)
- static inline bool keys_are_pressed(const std::vector<KeySym>& keys) {
 diff --git a/src/logging.cpp b/src/logging.cpp
-index ca33ee3..a24491a 100644
+index 8f82499..2d17a31 100644
 --- a/src/logging.cpp
 +++ b/src/logging.cpp
-@@ -36,27 +36,6 @@ string exec(string command) {
+@@ -39,27 +39,6 @@ string exec(string command) {
      return result;
  }
  
@@ -74,7 +61,7 @@ index ca33ee3..a24491a 100644
  static bool compareByFps(const logData &a, const logData &b)
  {
      return a.fps < b.fps;
-@@ -251,22 +230,6 @@ void Logger::notify_data_valid() {
+@@ -317,22 +296,6 @@ void Logger::notify_data_valid() {
    m_values_valid_cv.notify_all();
  }
  
@@ -95,13 +82,13 @@ index ca33ee3..a24491a 100644
 -}
 -
  void Logger::calculate_benchmark_data(){
-   vector<float> sorted {};
+   vector<float> fps_values {};
    for (auto& point : m_log_array)
 diff --git a/src/logging.h b/src/logging.h
-index 309cdb7..30227ef 100644
+index 4f82b21..1d76471 100644
 --- a/src/logging.h
 +++ b/src/logging.h
-@@ -54,8 +54,6 @@ public:
+@@ -55,8 +55,6 @@ public:
  
    void writeToFile();
  
@@ -110,7 +97,7 @@ index 309cdb7..30227ef 100644
    void calculate_benchmark_data();
    std::string output_folder;
    const int64_t log_interval;
-@@ -83,6 +81,5 @@ extern float frametime;
+@@ -84,6 +82,5 @@ extern float frametime;
  extern logData currentLogData;
  
  std::string exec(std::string command);
@@ -118,10 +105,10 @@ index 309cdb7..30227ef 100644
  
  #endif //MANGOHUD_LOGGING_H
 diff --git a/src/overlay.cpp b/src/overlay.cpp
-index cec8b6c..eb1d3e4 100644
+index 6f21dd6..69bb92f 100644
 --- a/src/overlay.cpp
 +++ b/src/overlay.cpp
-@@ -278,13 +278,6 @@ void update_hud_info_with_frametime(struct swapchain_stats& sw_stats, const stru
+@@ -283,13 +283,6 @@ void update_hud_info_with_frametime(struct swapchain_stats& sw_stats, const stru
           sw_stats.time = time.str();
        }
  
@@ -135,7 +122,7 @@ index cec8b6c..eb1d3e4 100644
        sw_stats.n_frames_since_update = 0;
        sw_stats.last_fps_update = now;
  
-@@ -961,8 +954,6 @@ void init_gpu_stats(uint32_t& vendorID, uint32_t reported_deviceID, overlay_para
+@@ -971,8 +964,6 @@ void init_gpu_stats(uint32_t& vendorID, uint32_t reported_deviceID, overlay_para
        }
     }
  #endif
@@ -145,10 +132,10 @@ index cec8b6c..eb1d3e4 100644
  
  void init_system_info(){
 diff --git a/src/overlay_params.cpp b/src/overlay_params.cpp
-index 8dcc24d..ccfe8d9 100644
+index 827a1e1..1976efe 100644
 --- a/src/overlay_params.cpp
 +++ b/src/overlay_params.cpp
-@@ -152,8 +152,6 @@ parse_string_to_keysym_vec(const char *str)
+@@ -155,8 +155,6 @@ parse_string_to_keysym_vec(const char *str)
  #define parse_toggle_hud_position   parse_string_to_keysym_vec
  #define parse_toggle_logging        parse_string_to_keysym_vec
  #define parse_reload_cfg            parse_string_to_keysym_vec
@@ -157,7 +144,7 @@ index 8dcc24d..ccfe8d9 100644
  #define parse_toggle_fps_limit      parse_string_to_keysym_vec
  #define parse_toggle_preset         parse_string_to_keysym_vec
  #define parse_reset_fps_metrics     parse_string_to_keysym_vec
-@@ -163,8 +161,6 @@ parse_string_to_keysym_vec(const char *str)
+@@ -166,8 +164,6 @@ parse_string_to_keysym_vec(const char *str)
  #define parse_toggle_hud_position(x)   {}
  #define parse_toggle_logging(x)        {}
  #define parse_reload_cfg(x)            {}
@@ -166,7 +153,7 @@ index 8dcc24d..ccfe8d9 100644
  #define parse_toggle_fps_limit(x)      {}
  #define parse_toggle_preset(x)         {}
  #define parse_reset_fps_metrics(x)     {}
-@@ -459,11 +455,9 @@ parse_fps_metrics(const char *str){
+@@ -431,11 +427,9 @@ parse_fps_metrics(const char *str){
  #define parse_font_scale(s) parse_float(s)
  #define parse_background_alpha(s) parse_float(s)
  #define parse_alpha(s) parse_float(s)
@@ -178,7 +165,7 @@ index 8dcc24d..ccfe8d9 100644
  #define parse_gl_bind_framebuffer(s) parse_unsigned(s)
  #define parse_gl_dont_flip(s) parse_unsigned(s) != 0
  #define parse_round_corners(s) parse_unsigned(s)
-@@ -705,7 +699,6 @@ static void set_param_defaults(struct overlay_params *params){
+@@ -736,7 +730,6 @@ static void set_param_defaults(struct overlay_params *params){
     params->font_scale_media_player = 0.55f;
     params->log_interval = 0;
     params->media_player_format = { "{title}", "{artist}", "{album}" };
@@ -186,7 +173,7 @@ index 8dcc24d..ccfe8d9 100644
     params->benchmark_percentiles = { "97", "AVG"};
     params->gpu_load_value = { 60, 90 };
     params->cpu_load_value = { 60, 90 };
-@@ -741,8 +734,6 @@ parse_overlay_config(struct overlay_params *params,
+@@ -775,8 +768,6 @@ parse_overlay_config(struct overlay_params *params,
     params->toggle_fps_limit = { XK_Shift_L, XK_F1 };
     params->toggle_logging = { XK_Shift_L, XK_F2 };
     params->reload_cfg = { XK_Shift_L, XK_F4 };
@@ -196,10 +183,10 @@ index 8dcc24d..ccfe8d9 100644
  
  #ifdef _WIN32
 diff --git a/src/overlay_params.h b/src/overlay_params.h
-index 1a25edb..28c6e53 100644
+index 1ed33ed..0b87492 100644
 --- a/src/overlay_params.h
 +++ b/src/overlay_params.h
-@@ -142,8 +142,6 @@ typedef unsigned long KeySym;
+@@ -145,8 +145,6 @@ typedef unsigned long KeySym;
     OVERLAY_PARAM_CUSTOM(toggle_logging)              \
     OVERLAY_PARAM_CUSTOM(reset_fps_metrics)           \
     OVERLAY_PARAM_CUSTOM(reload_cfg)                  \
@@ -208,7 +195,7 @@ index 1a25edb..28c6e53 100644
     OVERLAY_PARAM_CUSTOM(offset_x)                    \
     OVERLAY_PARAM_CUSTOM(offset_y)                    \
     OVERLAY_PARAM_CUSTOM(background_alpha)            \
-@@ -170,7 +168,6 @@ typedef unsigned long KeySym;
+@@ -174,7 +172,6 @@ typedef unsigned long KeySym;
     OVERLAY_PARAM_CUSTOM(cpu_text)                    \
     OVERLAY_PARAM_CUSTOM(gpu_text)                    \
     OVERLAY_PARAM_CUSTOM(log_interval)                \
@@ -216,7 +203,7 @@ index 1a25edb..28c6e53 100644
     OVERLAY_PARAM_CUSTOM(benchmark_percentiles)       \
     OVERLAY_PARAM_CUSTOM(help)                        \
     OVERLAY_PARAM_CUSTOM(gpu_load_value)              \
-@@ -182,7 +179,6 @@ typedef unsigned long KeySym;
+@@ -186,7 +183,6 @@ typedef unsigned long KeySym;
     OVERLAY_PARAM_CUSTOM(cellpadding_y)               \
     OVERLAY_PARAM_CUSTOM(table_columns)               \
     OVERLAY_PARAM_CUSTOM(blacklist)                   \
@@ -224,7 +211,7 @@ index 1a25edb..28c6e53 100644
     OVERLAY_PARAM_CUSTOM(round_corners)               \
     OVERLAY_PARAM_CUSTOM(fsr_steam_sharpness)         \
     OVERLAY_PARAM_CUSTOM(fcat_screen_edge)            \
-@@ -286,8 +282,6 @@ struct overlay_params {
+@@ -293,8 +289,6 @@ struct overlay_params {
     std::vector<KeySym> toggle_fps_limit;
     std::vector<KeySym> toggle_logging;
     std::vector<KeySym> reload_cfg;
@@ -233,7 +220,7 @@ index 1a25edb..28c6e53 100644
     std::vector<KeySym> toggle_hud_position;
     std::vector<KeySym> reset_fps_metrics;
     std::string time_format, output_folder, output_file;
-@@ -295,7 +289,6 @@ struct overlay_params {
+@@ -302,7 +296,6 @@ struct overlay_params {
     std::string media_player_name;
     std::string cpu_text, gpu_text, fps_text;
     std::vector<std::string> blacklist;
@@ -241,7 +228,7 @@ index 1a25edb..28c6e53 100644
     std::vector<std::string> media_player_format;
     std::vector<std::string> benchmark_percentiles;
     std::string font_file, font_file_text;
-@@ -304,7 +297,6 @@ struct overlay_params {
+@@ -311,7 +304,6 @@ struct overlay_params {
     std::string custom_text;
     std::string config_file_path;
     std::unordered_map<std::string,std::string> options;
@@ -250,7 +237,7 @@ index 1a25edb..28c6e53 100644
     unsigned short fcat_screen_edge;
     unsigned short fcat_overlay_width;
 diff --git a/src/vulkan.cpp b/src/vulkan.cpp
-index dd14545..e976f33 100644
+index 4dcc600..6b7f289 100644
 --- a/src/vulkan.cpp
 +++ b/src/vulkan.cpp
 @@ -24,6 +24,8 @@

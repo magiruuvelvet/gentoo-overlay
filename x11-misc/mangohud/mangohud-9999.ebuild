@@ -66,8 +66,8 @@ src_prepare() {
 
 multilib_src_configure() {
     local emesonargs=(
-        --buildtype=release
         --prefix /usr
+        -Dbuildtype=release
         -Dappend_libdir_mangohud=false
         -Duse_system_spdlog=enabled
         -Dwith_xnvctrl=disabled
