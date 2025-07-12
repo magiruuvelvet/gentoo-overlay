@@ -8,8 +8,8 @@ KEYWORDS="*"
 IUSE=""
 
 RDEPEND="
-    sys-devel/clang
-    sys-devel/lld
+    llvm-core/clang
+    llvm-core/lld
 "
 
 src_unpack() {
