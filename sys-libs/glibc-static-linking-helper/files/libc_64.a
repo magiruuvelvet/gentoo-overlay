@@ -1,2 +1,0 @@
-OUTPUT_FORMAT(elf64-x86-64)
-GROUP ( /usr/lib64/libc.a AS_NEEDED ( /sucks/gnu/lib/gcc/x86_64-pc-linux/10.2.0/libgcc.a ) )
