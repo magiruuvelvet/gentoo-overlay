@@ -21,8 +21,8 @@ multilib_src_configure() {
     echo "tc-getPKG_CONFIG:       $(tc-getPKG_CONFIG)"
     echo "tc-getBUILD_PKG_CONFIG: $(tc-getBUILD_PKG_CONFIG)"
 
-    echo "CBUILD:                 $(portageq envvar CHOST)"
-    echo "CHOST:                  $(portageq envvar CBUILD)"
+    #echo "CBUILD:                 $(portageq envvar CHOST)"
+    #echo "CHOST:                  $(portageq envvar CBUILD)"
 
     echo "PATH: $PATH"
     echo "LD_LIBRARY_PATH: $LD_LIBRARY_PATH"
@@ -31,7 +31,13 @@ multilib_src_configure() {
     _meson_create_native_file
 }
 
+src_compile() {
+    :
+}
+
 src_install() {
+    env
+
     # exit with an error to avoid merging an empty package
     exit 1
 }
