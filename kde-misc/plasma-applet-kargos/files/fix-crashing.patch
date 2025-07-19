@@ -1,0 +1,13 @@
+diff --git a/plasmoid/contents/ui/main.qml b/plasmoid/contents/ui/main.qml
+index e3e016a..dfd4dab 100644
+--- a/plasmoid/contents/ui/main.qml
++++ b/plasmoid/contents/ui/main.qml
+@@ -244,7 +244,7 @@ PlasmoidItem {
+         engine: "executable"
+         connectedSources: []
+         onNewData: {
+-            mainlog("log commandResultsDS onNewData" + data);
++            // mainlog("log commandResultsDS onNewData" + data);
+             var stdout = data["stdout"];
+             exited(sourceName, stdout);
+             disconnectSource(sourceName); // cmd finished
