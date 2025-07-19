@@ -3,33 +3,36 @@
 
 EAPI=8
 
-PLASMA_MINIMAL="5.12"
-QT_MINIMAL="5.12"
-FRAMEWORKS_MINIMAL="5.38"
+PLASMA_MINIMAL="6.3"
+QT_MINIMAL="6.8"
+FRAMEWORKS_MINIMAL="6.13"
 inherit ecm kde.org
 
-MY_PN="${PN/plasma-}"
+DESCRIPTION="Plasma 6 applet in order to show the window appmenu"
+HOMEPAGE="https://github.com/proatgram/applet-window-appmenu6"
 
-DESCRIPTION="Plasma 5 applet in order to show the window appmenu"
-HOMEPAGE="https://store.kde.org/p/1274975"
+PATCHES="
+    ${FILESDIR}/use-kdecoration3.patch
+"
 
 if [[ ${PV} == 9999 ]]; then
 	inherit git-r3
-	EGIT_REPO_URI="https://github.com/psifidotos/${MY_PN}.git"
+	EGIT_REPO_URI="https://github.com/proatgram/applet-window-appmenu6"
 else
-	MY_P="${MY_PN}-${PV}"
-	SRC_URI="https://github.com/psifidotos/${MY_PN}/archive/v${PV}.tar.gz -> ${P}.tar.gz"
+	MY_P="applet-window-appmenu6-${PV}"
+	SRC_URI="https://github.com/proatgram/applet-window-appmenu6/archive/v${PV}.tar.gz -> ${P}.tar.gz"
 	KEYWORDS="~amd64 ~arm ~arm64 ~x86"
 	S="${WORKDIR}/${MY_P}"
 fi
 
 LICENSE="GPL-2"
-SLOT="5"
+SLOT="6"
 
 DEPEND="
-	>=kde-plasma/libplasma-${FRAMEWORKS_MINIMAL}:5
-	>=kde-frameworks/frameworkintegration-${FRAMEWORKS_MINIMAL}:5
-	>=dev-qt/qdbus-${QT_MINIMAL}
-	x11-libs/libxcb
+    >=kde-plasma/libplasma-${PLASMA_MINIMAL}:6
+    >=kde-plasma/plasma-workspace-${PLASMA_MINIMAL}:6
+    >=kde-frameworks/frameworkintegration-${FRAMEWORKS_MINIMAL}:6
+    >=dev-qt/qtbase-${QT_MINIMAL}[dbus]
+    x11-libs/libxcb
 "
 RDEPEND="${DEPEND}"

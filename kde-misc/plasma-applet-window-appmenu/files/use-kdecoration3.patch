@@ -1,0 +1,67 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index abf6d3c..e7260a0 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -22,7 +22,7 @@ find_package(KWayland REQUIRED)
+ 
+ find_package(Plasma "6.0" REQUIRED)
+ 
+-find_package(KDecoration2 REQUIRED)
++find_package(KDecoration3 REQUIRED)
+ find_package(LibTaskManager)
+ 
+ include(ECMQtDeclareLoggingCategory)
+diff --git a/lib/CMakeLists.txt b/lib/CMakeLists.txt
+index c9a3868..33ae7d0 100644
+--- a/lib/CMakeLists.txt
++++ b/lib/CMakeLists.txt
+@@ -21,7 +21,7 @@ target_link_libraries(plasma_applet_windowappmenu
+                       KF6::ConfigWidgets
+                       Plasma::Plasma
+                       KF6::WindowSystem
+-                      KDecoration2::KDecoration
+-                      KDecoration2::KDecoration2Private)
++                      KDecoration3::KDecoration
++                      KDecoration3::KDecoration3Private)
+ 
+ install(TARGETS plasma_applet_windowappmenu DESTINATION ${KDE_INSTALL_PLUGINDIR}/plasma/applets)
+diff --git a/lib/decorationpalette.cpp b/lib/decorationpalette.cpp
+index 2aa03b7..77f91a8 100644
+--- a/lib/decorationpalette.cpp
++++ b/lib/decorationpalette.cpp
+@@ -62,10 +62,10 @@ bool DecorationPalette::isValid() const
+     return m_activeTitleBarColor.isValid();
+ }
+ 
+-QColor DecorationPalette::color(KDecoration2::ColorGroup group, KDecoration2::ColorRole role) const
++QColor DecorationPalette::color(KDecoration3::ColorGroup group, KDecoration3::ColorRole role) const
+ {
+-    using KDecoration2::ColorRole;
+-    using KDecoration2::ColorGroup;
++    using KDecoration3::ColorRole;
++    using KDecoration3::ColorGroup;
+ 
+     switch (role) {
+         case ColorRole::Frame:
+diff --git a/lib/decorationpalette.h b/lib/decorationpalette.h
+index 79a1cd1..4cedcc6 100644
+--- a/lib/decorationpalette.h
++++ b/lib/decorationpalette.h
+@@ -23,7 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ #ifndef KWIN_DECORATION_PALETTE_H
+ #define KWIN_DECORATION_PALETTE_H
+ 
+-#include <KDecoration2/DecorationSettings>
++#include <KDecoration3/DecorationSettings>
+ #include <QFileSystemWatcher>
+ #include <QPalette>
+ 
+@@ -36,7 +36,7 @@ public:
+ 
+     bool isValid() const;
+ 
+-    QColor color(KDecoration2::ColorGroup group, KDecoration2::ColorRole role) const;
++    QColor color(KDecoration3::ColorGroup group, KDecoration3::ColorRole role) const;
+     QPalette palette() const;
+ 
+ Q_SIGNALS:
