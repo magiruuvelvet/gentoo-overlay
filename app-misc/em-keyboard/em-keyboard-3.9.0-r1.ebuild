@@ -20,15 +20,10 @@ SLOT="0"
 KEYWORDS="**"
 RESTRICT="test"
 
-# TODO: figure out how to correctly use python_foreach_impl (QA notice)
 python_install() {
     distutils-r1_python_install
 
     # install missing files (why is distutils-r1 not catching these?)
-    installation() {
-        cp "${S}/em/__init__.py" "${D}$(python_get_sitedir)/em/"
-        cp "${S}/em/emoji-en-US.json" "${D}$(python_get_sitedir)/em/"
-    }
-
-    python_foreach_impl installation
+    cp "${S}/em/__init__.py" "${D}$(python_get_sitedir)/em/"
+    cp "${S}/em/emoji-en-US.json" "${D}$(python_get_sitedir)/em/"
 }
