@@ -15,7 +15,7 @@ KEYWORDS="amd64"
 LICENSE="BSD"
 SLOT="0"
 
-RDEPEND="sys-devel/llvm sys-libs/llvm-libunwind"
+RDEPEND="llvm-core/llvm llvm-runtimes/libunwind"
 BDEPEND="dev-lang/ldc2"
 DEPEND="${RDEPEND}"
 
