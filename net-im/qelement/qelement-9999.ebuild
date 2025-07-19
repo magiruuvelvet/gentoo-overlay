@@ -16,13 +16,9 @@ IUSE="+libnotify +translations"
 CMAKE_BUILD_TYPE=Release
 
 DEPEND="
-    dev-qt/qtcore
-    dev-qt/qtgui
-    dev-qt/qtwidgets
-    dev-qt/qtnetwork
-    dev-qt/qtconcurrent
-    dev-qt/qtwebengine
-    translations? ( dev-qt/linguist-tools )
+    dev-qt/qtbase:6[gui,widgets,network,concurrent]
+    dev-qt/qtwebengine:6
+    translations? ( dev-qt/qttools:6[linguist] )
     libnotify? ( x11-libs/libnotify )
 "
 RDEPEND="${DEPEND}"
