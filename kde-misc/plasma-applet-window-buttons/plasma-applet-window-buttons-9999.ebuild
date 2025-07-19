@@ -1,38 +1,36 @@
 EAPI=8
 
-PLASMA_MINIMAL="5.12"
-QT_MINIMAL="5.9"
-FRAMEWORKS_MINIMAL="5.38"
+PLASMA_MINIMAL="6.3"
+QT_MINIMAL="6.8"
+FRAMEWORKS_MINIMAL="6.16"
 SLOT=0
 inherit ecm kde.org
 
-MY_PN="${PN/plasma-}"
+DESCRIPTION="Plasma 6 applet in order to show window buttons in your panels"
+HOMEPAGE="https://github.com/moodyhunter/applet-window-buttons6"
 
-DESCRIPTION="Plasma 5 applet in order to show window buttons in your panels"
-HOMEPAGE="https://github.com/psifidotos/applet-window-buttons"
-
-PATCHES="
-	${FILESDIR}/pr-191.patch
-"
+#PATCHES="
+#	${FILESDIR}/use-kdecoration3.patch
+#"
 
 if [[ ${PV} == 9999 ]]; then
 	inherit git-r3
 	SRC_URI=""
 	KEYWORDS=""
-	EGIT_REPO_URI="https://github.com/psifidotos/${MY_PN}.git"
+	EGIT_REPO_URI="https://github.com/moodyhunter/applet-window-buttons6"
 else
-	MY_P="${MY_PN}-${PV}"
-	SRC_URI="https://github.com/psifidotos/${MY_PN}/archive/${PV}.tar.gz -> ${P}.tar.gz"
+	MY_P="applet-window-buttons6-${PV}"
+	SRC_URI="https://github.com/moodyhunter/applet-window-buttons6/archive/${PV}.tar.gz -> ${P}.tar.gz"
 	KEYWORDS="~amd64 ~arm ~arm64 ~x86"
-	S="${WORKDIR}/${MY_P}"
+	S="${WORKDIR}/applet-window-buttons6"
 fi
 
 IUSE=""
 
 DEPEND="
-	kde-plasma/libplasma
-	kde-frameworks/frameworkintegration
-	dev-qt/qtdbus
+	kde-plasma/libplasma:6
+	kde-frameworks/frameworkintegration:6
+	dev-qt/qtbase:6[dbus]
 	x11-libs/libxcb
 "
 RDEPEND="${DEPEND}"
