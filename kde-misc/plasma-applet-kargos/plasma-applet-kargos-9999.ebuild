@@ -10,6 +10,10 @@ KEYWORDS="*"
 
 PLASMOID_NAME="org.kde.kargos"
 
+PATCHES="
+    ${FILESDIR}/fix-crashing.patch
+"
+
 S="${WORKDIR}/plasma-applet-kargos-${PV}"
 
 DEPEND="
