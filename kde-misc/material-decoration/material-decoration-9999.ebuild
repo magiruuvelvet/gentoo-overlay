@@ -21,6 +21,7 @@ PATCHES="
 "
 
 DEPEND="
+    >=dev-qt/qtbase-${QT_MINIMAL}[dbus]
     >=kde-frameworks/kconfig-${FRAMEWORKS_MINIMAL}:6
     >=kde-frameworks/kconfigwidgets-${FRAMEWORKS_MINIMAL}:6
     >=kde-frameworks/kwindowsystem-${FRAMEWORKS_MINIMAL}:6
@@ -31,7 +32,6 @@ DEPEND="
     >=kde-plasma/kdecoration-${PLASMA_MINIMAL}:6
     >=kde-plasma/kwayland-${PLASMA_MINIMAL}:6
     >=kde-plasma/kwin-x11-${PLASMA_MINIMAL}:6
-    >=dev-qt/qdbus-${QT_MINIMAL}
     x11-libs/libxcb
 "
 RDEPEND="${DEPEND}"
