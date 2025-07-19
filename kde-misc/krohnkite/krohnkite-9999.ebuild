@@ -2,9 +2,9 @@ EAPI=7
 
 inherit git-r3
 
-EGIT_REPO_URI="https://github.com/esjeon/krohnkite.git"
+EGIT_REPO_URI="https://github.com/anametologin/krohnkite.git"
 
-HOMEPAGE="https://github.com/esjeon/krohnkite.git"
+HOMEPAGE="https://github.com/anametologin/krohnkite.git"
 DESCRIPTION="A dynamic tiling extension for KWin"
 LICENSE="MIT"
 
@@ -13,18 +13,18 @@ KEYWORDS=""
 IUSE=""
 
 PATCHES="
-    ${FILESDIR}/pr-214.patch
+    ${FILESDIR}/do-not-run-npm.patch
 "
 
 # IMPORTANT!
 # this ebuild is a hack which only works on my local machine
 
 # build dependencies
-# typescript 3.x+
+# typescript 5.x+
 # npm install typescript
 
 RDEPEND="
-    kde-plasma/kwin
+    kde-plasma/kwin:6
 "
 
 src_compile() {
@@ -36,5 +36,5 @@ src_compile() {
 src_install() {
     install -d "${D}/usr/share/kwin/scripts/${PN}"
     cp -ra "${S}/pkg/.local/share/kwin/scripts/${PN}/." "${D}/usr/share/kwin/scripts/${PN}/"
-    install -Dm644 "${S}/pkg/.local/share/kwin/scripts/${PN}/metadata.desktop" "${D}/usr/share/kservices5/${PN}.desktop"
+    install -Dm644 "${S}/pkg/.local/share/kwin/scripts/${PN}/metadata.desktop" "${D}/usr/share/kservices6/${PN}.desktop"
 }
