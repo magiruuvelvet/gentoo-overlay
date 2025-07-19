@@ -2,11 +2,11 @@ EAPI=8
 
 inherit kde.org
 
-DESCRIPTION="Plasma 5 applet that shows the application title and icon for active window"
-HOMEPAGE="https://github.com/psifidotos/applet-window-title"
+DESCRIPTION="Plasma 6 applet that shows the application title and icon for active window"
+HOMEPAGE="https://github.com/moodyhunter/applet-window-title6"
 SLOT=0
 
-S="${WORKDIR}/applet-window-title-${PV}"
+S="${WORKDIR}/plasma-applet-window-title-${PV}"
 
 if [[ ${PV} == 9999 ]]; then
 	inherit git-r3
@@ -21,7 +21,7 @@ fi
 IUSE=""
 
 DEPEND="
-    kde-plasma/plasma-workspace
+    kde-plasma/plasma-workspace:6
 "
 RDEPEND="${DEPEND}"
 
