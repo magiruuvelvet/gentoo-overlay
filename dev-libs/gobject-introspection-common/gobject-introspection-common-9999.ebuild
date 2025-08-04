@@ -1,0 +1,4 @@
+EAPI=8
+
+KEYWORDS="*"
+SLOT="0"
