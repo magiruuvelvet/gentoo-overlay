@@ -1,7 +1,0 @@
-#!/bin/sh
-export LD_LIBRARY_PATH=/usr/musl/lib64:/usr/musl/lib
-
-# FIXME: musl can't ldd both bits (32/64) at the same time,
-# need to use the appropriate interpreter for each bit
-# with some readelf hack
-exec /lib64/ld-musl-x86_64.so.1 --list -- "$@"

@@ -1,4 +1,0 @@
-#!/bin/sh
-# tiny "launcher" to run musl binaries with the correct libraries
-export LD_LIBRARY_PATH=/usr/musl/lib64:/usr/musl/lib
-exec "$@"
